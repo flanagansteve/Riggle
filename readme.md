@@ -10,7 +10,7 @@ The program will prompt you for the location of your contract and write some dep
 
 Coming soon: 
 
-- 1. a tool to prop up a development network automatically for you, deploying your contract's web3 automatically so that you can go straight from development to testing 
+- 1. a tool to prop up a development network for you, deploying your contract's web3 automatically so that you can go straight from development to testing 
 - 2. automated testing 
 - 3. a full fledged GUI so that you can have a nice IDE to drive you towards becoming a smart contract pro.
 
