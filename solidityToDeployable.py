@@ -88,10 +88,8 @@ def defineContractObject():
 
                 deployable_contract.write("\"outputs\":[")
                 if "returns(" in line:
-                    print("recording output")
                     output_declaration = line[line.index("returns(") + len("returns("):]
                     output_declaration = output_declaration[:output_declaration.index(")")]
-                    print(output_declaration)
                     for output in output_declaration.split(","):
                         output_info = output.split()
                         if output_info[0] == "uint":

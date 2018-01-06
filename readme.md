@@ -3,7 +3,11 @@ Hello, and thanks for using Riggle! This product is currently in beta, so please
 
 You must have py-solc installed to use this. Run "pip install py-solc" to get it. Riggle was designed and tested to run on python3, but I haven't tested it on python2 so don't be afraid to try your luck there.
 
-To use Riggle, download this repository, and write up a contract in Solidity. When you're ready to test and deploy your contract, run the Python program solidityToDeployable.py from the Riggle folder. The program will prompt you for the location of your contract and ideally write some deployable web3 text to your project directory. You can then copy and paste this deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy is unlocked.
+To use Riggle, download this repository, and write up a contract in Solidity. When you're ready to test and deploy your contract, run the Python program solidityToDeployable.py from the Riggle folder. On Linux or osx:
+
+$ python riggle/solidityToDeployable.py
+
+The program will prompt you for the location of your contract and write some deployable web3 text to deployable_contractname.txt in your project directory. You can then copy and paste this deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded.
 
 Coming soon: 
 
