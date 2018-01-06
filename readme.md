@@ -1,4 +1,3 @@
-
 Hello, and thanks for using Riggle! This product is currently in beta, so please, do not hesitate to open issues on this repository so we can continue to improve it.
 
 You must have py-solc installed to use this. Run "pip install py-solc" to get it. Riggle was designed and tested to run on python3, but I haven't tested it on python2 so don't be afraid to try your luck there.
@@ -19,4 +18,4 @@ I've attached a quick guide for setting up a private ethereum development networ
 
 \- Steve from Orion Blockchain Solutions
 
-Tips: 0xDE1fa3159b2D8892Ef83648E639F1ee21Fc68F88
+I've realeased this software for free, to benefit the Solidity, but tips and support are always appreciated: 0xDE1fa3159b2D8892Ef83648E639F1ee21Fc68F88
