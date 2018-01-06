@@ -26,7 +26,7 @@ try:
 except ValueError:
     # windows
     windows = True
-    contract_name = contract_source[contract_source.rindex('\\')+1:contract_source.rindex('sol')]
+    contract_name = contract_source[contract_source.rindex('\\')+1:contract_source.index('.sol')]
 
 if "/contracts/" in contract_source or "\\contracts\\" in contract_source:
     # if in a contracts-only directory, we will save this one directory up,
