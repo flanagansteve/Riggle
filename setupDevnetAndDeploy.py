@@ -34,8 +34,15 @@
 #$ rm -r ./.ethereum/devnet
 #$ rm account1.txt
 #$ rm account2.txt
-import subprocess
+#import subprocess
 
-p = subprocess.Popen(["echo", "hello world > success.txt"], stdout=subprocess.PIPE)
+#p = subprocess.Popen(["echo", "hello world > success.txt"], stdout=subprocess.PIPE)
 
-print(p.communicate())
+#print(p.communicate())
+
+#TODO: instantiate new development network from a genesis.json that preloads one account with a default password with many eth, and that has a low mining difficulty and high gas limit
+#TODO: instantiate miner for this network
+#TODO: pop open a console in an ipc attachment to this network, set default account and eth.accounts[0] as the preloaded one with, unlock with default password
+#TODO: deploy the web3 deploy passed to this python file from the default account
+#TODO: show user the console and allow them to interact with contract
+#TODO: when done, wipe datadir and prepare for another deploy
