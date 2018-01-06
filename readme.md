@@ -1,6 +1,3 @@
----
-title: Welcome!
----
 
 Hello, and thanks for using Riggle! This product is currently in beta, so please, do not hesitate to open issues on this repository so we can continue to improve it.
 
