@@ -1,6 +1,6 @@
 Hello, and thanks for using Riggle! This product is currently in beta, so please, do not hesitate to open issues on this repository so we can continue to improve it.
 
-You must have py-solc installed to use this. Run "pip install py-solc" to get it. Riggle was designed and tested to run on python3, but I haven't tested it on python2 so don't be afraid to try your luck there.
+You must have py-solc installed to use this. Run "pip3 install py-solc" to get it. Riggle was designed and tested to run on python3, but I haven't tested it on python2 so don't be afraid to try your luck there.
 
 To use Riggle, download this repository, and write up a contract in Solidity. When you're ready to test and deploy your contract, run the Python program solidityToDeployable.py from the Riggle folder. On Linux or osx:
 
