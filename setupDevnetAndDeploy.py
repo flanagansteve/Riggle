@@ -39,10 +39,23 @@
 #p = subprocess.Popen(["echo", "hello world > success.txt"], stdout=subprocess.PIPE)
 
 #print(p.communicate())
-
+import json
+#TODO: do we let user pick password, or use own random one?
+#      if user picks, then they may reuse a password which we won't store safely
+#      if randomly generated, user can't use password to reunlock as need be
 #TODO: instantiate new development network from a genesis.json that preloads one account with a default password with many eth, and that has a low mining difficulty and high gas limit
+# generate random password, save to devnet_password.txt
+# create account in geth with password from devnet_password, write to account1.txt
+# possibly: subprocess.Popen(["geth", "-datadir ./.ethereum/devnet", "account new ./devnet_password.txt", "> account1.txt"]), then close?
+# delete devnet_password
+# get address from account1.txt
+# write to genesis.json, with standard stuff + account address from account1.txt allocated iwth lots of eth
 #TODO: instantiate miner for this network
+# possibly: subprocess.Popen([])
 #TODO: pop open a console in an ipc attachment to this network, set default account and eth.accounts[0] as the preloaded one with, unlock with default password
 #TODO: deploy the web3 deploy passed to this python file from the default account
+# probably can't use popen for this, will need to programmatically access geth console
+# look for api or ipc
 #TODO: show user the console and allow them to interact with contract
 #TODO: when done, wipe datadir and prepare for another deploy
+# either popen -> rm or an existing python file management tool
