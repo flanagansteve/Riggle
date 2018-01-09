@@ -100,6 +100,19 @@ def defineContractObject():
                         else:
                             deployable_contract.write("{\"name\":\"\",\"type\":\""+output_info[0]+"\"}, ")
                     deployable_contract.write("\b")
+                elif "returns (" in line:
+                    output_declaration = line[line.index("returns (") + len("returns ("):]
+                    output_declaration = output_declaration[:output_declaration.index(")")]
+                    for output in output_declaration.split(","):
+                        print(output_info)
+                        output_info = output.split()
+                        if output_info[0] == "uint":
+                            output_info[0] = "uint256"
+                        if len(output_info) == 2:
+                            deployable_contract.write("{\"name\":\"" + output_info[1] + "\",\"type\":\""+output_info[0]+"\"}, ")
+                        else:
+                            deployable_contract.write("{\"name\":\"\",\"type\":\""+output_info[0]+"\"}, ")
+                    deployable_contract.write("\b")
                 deployable_contract.write("],")
 
                 deployable_contract.write("\"payable\":")

@@ -15,7 +15,6 @@ def instantiateNetwork():
     password_file.close()
     pwd_file = open('./devnet_info/devnet_password.txt', 'r')
     devnet_pwd = pwd_file.readline()
-    print('devnet account pwd is ' + devnet_pwd)
     pwd_file.close()
 
     # create account in geth with password from devnet_password, write to account1.txt
@@ -30,10 +29,8 @@ def instantiateNetwork():
     # get address from account1.txt
     devnet_address = open('./devnet_info/account1.txt', 'r').readline()
     devnet_address = devnet_address[devnet_address.index("{")+1:devnet_address.index("}")]
-    print('devnet address is '+devnet_address)
 
     # write to genesis.json, with standard stuff + account address from account1.txt allocated iwth lots of eth
-    print('writing genesis.json')
     genesis_json = open('./devnet_info/genesis.json', 'w')
     genesis_json.write("{\n\t\"config\": {" +
                        "\n\t\t\"chainId\": 15,\n\t\t\"homesteadBlock\": 0,\n\t\t\"eip155Block\": 0,\n\t\t\"eip158Block\": 0\n\t}," +
@@ -43,34 +40,27 @@ def instantiateNetwork():
 
     # init geth network from this genesis, executed via shell script
     init_geth = open('init_geth.sh', 'w')
-    init_geth.write("#!/bin/bash\ngeth --datadir "+devnet_directory+" init ./devnet_info/genesis.json")
+    init_geth.write("#!/bin/bash\ngeth --verbosity 0 --datadir "+devnet_directory+" init ./devnet_info/genesis.json")
     init_geth.close()
     subprocess.check_call(["sudo", "chmod", "+rwx", "./init_geth.sh"])
     subprocess.check_call(["sudo", "./init_geth.sh"])
 
-    # start mining, also executed via shell script
-    init_miner = open('init_miner.sh', 'w')
-    init_miner.write("#!/bin/bash\n")
     # TODO: randomly pick port
     port_num = "35003"
-    init_miner.write("sudo geth --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
+
+    # start mining, also executed via shell script
+    init_miner = open('init_miner.sh', 'w')
+    init_miner.write("#!/bin/bash\nsudo geth --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
+    print("1. Initialise miner with \"sudo geth --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
     #init_miner.write("geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
     init_miner.close()
     miner_script = open('init_miner.sh', 'r')
-    print(miner_script.readline()+"\n"+miner_script.readline())
+    print(miner_script.readline()+""+miner_script.readline())
     miner_script.close()
     subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
     subprocess.Popen(["sudo", "./init_miner.sh"])
-    print("network set up and miner running. open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
-
-    # TODO:
-    # initialise console
-    #print("ie, geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
-    #init_console = open('init_console.sh', 'w')
-    #init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
-    #init_console.close()
-    #subprocess.check_call(["sudo", "chmod", "+rwx", "./init_console.sh"])
-    #subprocess.check_call(["sudo", "./init_console.sh"])
+    print("2. pop a remote console with: sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
+    print("Network set up and miner running. Open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
 
 # entering into console
 # eth.accounts[0] = \"devnet_address\"
@@ -83,6 +73,14 @@ def instantiateNetwork():
 # possibly: run automated interactions with contract
 
 def deployContract(web3_source):
+    # TODO:
+    # initialise console
+    #print("ie, geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
+    #init_console = open('init_console.sh', 'w')
+    #init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
+    #init_console.close()
+    #subprocess.check_call(["sudo", "chmod", "+rwx", "./init_console.sh"])
+    #subprocess.check_call(["sudo", "./init_console.sh"])
     pass
 
 instantiateNetwork()
