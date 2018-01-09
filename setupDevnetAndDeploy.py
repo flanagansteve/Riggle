@@ -1,20 +1,29 @@
 #!/usr/bin/python3
 import os, subprocess, random, string, time
-#TODO: add windows support
-def instantiateNetwork():
+#TODO: test windows support
+def instantiateNetwork(windows=False):
     os.mkdir('devnet_info')
     #TODO: do we let user pick password, or use own random one?
     #      if user picks, then they may reuse a password which we won't store safely
     #      if randomly generated, user can't use password to reunlock as need be
 
     # generate random directory name, to prevent collisions
-    devnet_directory = "./.ethereum/devnet"+''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    if not windows:
+        devnet_directory = "./.ethereum/devnet"+''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    else:
+        devnet_directory = ".\.ethereum\devnet"+''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
 
     # generate random password, save to devnet_password.txt
-    password_file = open('./devnet_info/devnet_password.txt', 'w')
+    if not windows:
+        password_file = open('./devnet_info/devnet_password.txt', 'w')
+    else:
+        password_file = open('.\devnet_info\devnet_password.txt', 'w')
     password_file.write(''.join(random.choices(string.ascii_uppercase + string.digits, k=10)))
     password_file.close()
-    pwd_file = open('./devnet_info/devnet_password.txt', 'r')
+    if not windows:
+        pwd_file = open('./devnet_info/devnet_password.txt', 'r')
+    else:
+        pwd_file = open('.\devnet_info\devnet_password.txt', 'r')
     devnet_pwd = pwd_file.readline()
     pwd_file.close()
 
@@ -22,17 +31,29 @@ def instantiateNetwork():
     # there are modules to run terminal commands w/arguments but they're not working right now. So
     # I'll write a temporary shell script, chmod it, and use that
     instantiate_geth_account = open('instantiate_geth_account.sh', 'w')
-    instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password ./devnet_info/devnet_password.txt > ./devnet_info/account1.txt")
+    if not windows:
+        instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password ./devnet_info/devnet_password.txt > ./devnet_info/account1.txt")
+    else:
+        instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password .\devnet_info\devnet_password.txt > .\devnet_info\account1.txt")
     instantiate_geth_account.close()
-    subprocess.check_call(["sudo", "chmod", "+rwx", "./instantiate_geth_account.sh"])
-    subprocess.check_call(["sudo", "./instantiate_geth_account.sh"])
+    if not windows:
+        subprocess.check_call(["sudo", "chmod", "+rwx", "./instantiate_geth_account.sh"])
+        subprocess.check_call(["sudo", "./instantiate_geth_account.sh"])
+    else:
+        subprocess.check_call(["start", "instantiate_geth_account.sh"])
 
     # get address from account1.txt
-    devnet_address = open('./devnet_info/account1.txt', 'r').readline()
+    if not windows:
+        devnet_address = open('./devnet_info/account1.txt', 'r').readline()
+    else:
+        devnet_address = open('./devnet_info/account1.txt', 'r').readline()
     devnet_address = devnet_address[devnet_address.index("{")+1:devnet_address.index("}")]
 
     # write to genesis.json, with standard stuff + account address from account1.txt allocated iwth lots of eth
-    genesis_json = open('./devnet_info/genesis.json', 'w')
+    if not windows:
+        genesis_json = open('./devnet_info/genesis.json', 'w')
+    else:
+        genesis_json = open('.\devnet_info\genesis_json', 'w')
     genesis_json.write("{\n\t\"config\": {" +
                        "\n\t\t\"chainId\": 15,\n\t\t\"homesteadBlock\": 0,\n\t\t\"eip155Block\": 0,\n\t\t\"eip158Block\": 0\n\t}," +
                        "\n\t\"difficulty\": \"200\",\n\t\"gasLimit\": \"2100000000000\",\n\t\"alloc\": {" +
@@ -41,10 +62,15 @@ def instantiateNetwork():
 
     # init geth network from this genesis, executed via shell script
     init_geth = open('init_geth.sh', 'w')
-    init_geth.write("#!/bin/bash\ngeth --verbosity 0 --datadir "+devnet_directory+" init ./devnet_info/genesis.json")
-    init_geth.close()
-    subprocess.check_call(["sudo", "chmod", "+rwx", "./init_geth.sh"])
-    subprocess.check_call(["sudo", "./init_geth.sh"])
+    if not windows:
+        init_geth.write("#!/bin/bash\ngeth --verbosity 0 --datadir "+devnet_directory+" init ./devnet_info/genesis.json")
+        init_geth.close()
+        subprocess.check_call(["sudo", "chmod", "+rwx", "./init_geth.sh"])
+        subprocess.check_call(["sudo", "./init_geth.sh"])
+    else:
+        init_geth.write("#!/bin/bash\ngeth --verbosity 0 --datadir "+devnet_directory+" init .\devnet_info\genesis.json")
+        init_geth.close()
+        subprocess.check_call(["start", "init_geth.sh"])
 
     # TODO: miner initalisation not working. something wrong with init_miner.sh.
     # TODO: randomly pick port
@@ -75,7 +101,7 @@ def instantiateNetwork():
 # show user console
 # possibly: run automated interactions with contract
 
-def deployContract(web3_source):
+def deployContract(web3_source, windows=False):
     # TODO:
     # initialise console
     #print("ie, geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
@@ -86,13 +112,23 @@ def deployContract(web3_source):
     #subprocess.check_call(["sudo", "./init_console.sh"])
     pass
 
-def cleanUp():
+def cleanUp(windows=False):
     # clean up
-    os.remove("devnet_info/account1.txt")
-    os.remove("devnet_info/devnet_password.txt")
-    os.remove("devnet_info/genesis.json")
-    os.rmdir('devnet_info')
-    os.remove("instantiate_geth_account.sh")
-    os.remove("init_geth.sh")
-    #os.remove("init_miner.sh")
-    #os.remove("init_console.sh")
+    if not windows:
+        os.remove("devnet_info/account1.txt")
+        os.remove("devnet_info/devnet_password.txt")
+        os.remove("devnet_info/genesis.json")
+        os.rmdir('devnet_info')
+        os.remove("instantiate_geth_account.sh")
+        os.remove("init_geth.sh")
+        #os.remove("init_miner.sh")
+        #os.remove("init_console.sh")
+    else:
+        os.remove("devnet_info\account1.txt")
+        os.remove("devnet_info\devnet_password.txt")
+        os.remove("devnet_info\genesis.json")
+        os.rmdir('devnet_info')
+        os.remove("instantiate_geth_account.sh")
+        os.remove("init_geth.sh")
+        #os.remove("init_miner.sh")
+        #os.remove("init_console.sh")
