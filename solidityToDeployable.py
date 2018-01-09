@@ -19,7 +19,7 @@ while(contract is None):
     try:
         contract = open(contract_source, 'r')
     except FileNotFoundError:
-        contract_source = input("Input file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Storage.sol,\npresuming you're working from the directory above your project\n")
+        contract_source = input("File Not Found\nInput file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Contract.sol,\npresuming you're working from the directory above your project\n")
 try:
     # osx and linux
     windows = False

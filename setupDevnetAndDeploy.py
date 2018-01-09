@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import os, subprocess, random, string
+import os, subprocess, random, string, time
+#TODO: add windows support
 def instantiateNetwork():
     os.mkdir('devnet_info')
     #TODO: do we let user pick password, or use own random one?
@@ -45,22 +46,24 @@ def instantiateNetwork():
     subprocess.check_call(["sudo", "chmod", "+rwx", "./init_geth.sh"])
     subprocess.check_call(["sudo", "./init_geth.sh"])
 
+    # TODO: miner initalisation not working. something wrong with init_miner.sh.
     # TODO: randomly pick port
     port_num = "35003"
 
+    print("Network set up. Run a miner, and then in a new terminal open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
+    print("1. Initialise miner with \"sudo geth --port " + port_num + "--datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
+    print("2. pop a remote console with \"sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console\"")
+
     # start mining, also executed via shell script
-    init_miner = open('init_miner.sh', 'w')
-    init_miner.write("#!/bin/bash\nsudo geth --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
-    print("1. Initialise miner with \"sudo geth --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
+    #init_miner = open('init_miner.sh', 'w')
+    #init_miner.write("#!/bin/bash\nsudo geth --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
     #init_miner.write("geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
-    init_miner.close()
-    miner_script = open('init_miner.sh', 'r')
-    print(miner_script.readline()+""+miner_script.readline())
-    miner_script.close()
-    subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
-    subprocess.Popen(["sudo", "./init_miner.sh"])
-    print("2. pop a remote console with: sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
-    print("Network set up and miner running. Open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
+    #init_miner.close()
+    #miner_script = open('init_miner.sh', 'r')
+    #print(miner_script.readline()+""+miner_script.readline())
+    #miner_script.close()
+    #subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
+    #subprocess.Popen(["sudo", "./init_miner.sh"])
 
 # entering into console
 # eth.accounts[0] = \"devnet_address\"
@@ -93,5 +96,5 @@ os.remove("devnet_info/genesis.json")
 os.rmdir('devnet_info')
 os.remove("instantiate_geth_account.sh")
 os.remove("init_geth.sh")
-os.remove("init_miner.sh")
+#os.remove("init_miner.sh")
 #os.remove("init_console.sh")
