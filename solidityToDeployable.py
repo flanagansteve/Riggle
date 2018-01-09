@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from solc import compile_source, compile_files, compile_standard
 # this is a tool to convert your Solidity smart contract source
 # code to a deployable web3 format. you can copy and paste the output
