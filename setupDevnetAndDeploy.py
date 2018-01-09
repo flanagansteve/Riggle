@@ -51,7 +51,7 @@ def instantiateNetwork():
     port_num = "35003"
 
     print("Network set up. Run a miner, and then in a new terminal open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
-    print("1. Initialise miner with \"sudo geth --port " + port_num + "--datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
+    print("1. Initialise miner with \"sudo geth --port " + port_num + " --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
     print("2. pop a remote console with \"sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console\"")
 
     # start mining, also executed via shell script
@@ -86,15 +86,13 @@ def deployContract(web3_source):
     #subprocess.check_call(["sudo", "./init_console.sh"])
     pass
 
-instantiateNetwork()
-# deployContract(web3_source from other python path, console_path from instantiateNetwork))
-
-# clean up
-os.remove("devnet_info/account1.txt")
-os.remove("devnet_info/devnet_password.txt")
-os.remove("devnet_info/genesis.json")
-os.rmdir('devnet_info')
-os.remove("instantiate_geth_account.sh")
-os.remove("init_geth.sh")
-#os.remove("init_miner.sh")
-#os.remove("init_console.sh")
+def cleanUp():
+    # clean up
+    os.remove("devnet_info/account1.txt")
+    os.remove("devnet_info/devnet_password.txt")
+    os.remove("devnet_info/genesis.json")
+    os.rmdir('devnet_info')
+    os.remove("instantiate_geth_account.sh")
+    os.remove("init_geth.sh")
+    #os.remove("init_miner.sh")
+    #os.remove("init_console.sh")
