@@ -1,5 +1,10 @@
 #!/usr/bin/python3
-from solc import compile_source, compile_files, compile_standard
+import sys
+try:
+    from solc import compile_source, compile_files, compile_standard
+except:
+    print("Install py-solc to use this tool. You can do so with: \"pip3 install py-solc\"")
+    sys.exit()
 # this is a tool to convert your Solidity smart contract source
 # code to a deployable web3 format. you can copy and paste the output
 # into a geth console and then interact with your contract from there
@@ -185,7 +190,11 @@ def fileToString(file_path):
     return output
 
 def getContractBytecode(contract_source_string):
-    py_solc_result = compile_source(contract_source_string)
+    try:
+        py_solc_result = compile_source(contract_source_string)
+    except FileNotFoundError:
+        print("Solc not installed. Please search online and install Solc to use this tool and to develop in Solidity")
+        sys.exit()
     output = py_solc_result['<stdin>:'+contract_name]
     bytecode = output['bin']
     return bytecode
