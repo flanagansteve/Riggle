@@ -74,7 +74,7 @@ def defineContractObject():
                 if len(parameters) > 0:
                     for input in parameters.split(","):
                         input_info = input.split()
-                        deployable_contract.write("var " + input_info[1] + " = /* insert " + input_info[0] + " here */\n")
+                        deployable_contract.write("var " + input_info[1] + " = /* insert " + input_info[0] + " here */;\n")
                         constructor_parameters.append(input_info)
     search_for_con_params.close()
     deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract([")
@@ -98,6 +98,7 @@ def defineContractObject():
                             input_info[0] = "uint256"
                         inputWeb3 += "{\"name\":\"" + input_info[1] + "\",\"type\":\""+input_info[0]+"\"}, "
                     inputWeb3 = inputWeb3[:inputWeb3.rindex(",")]
+                deployable_contract.write(inputWeb3)
                 deployable_contract.write("],")
 
                 deployable_contract.write("\"name\":\"" + line[line.index("function ")+len("function "):line.index("(")] + "\",")
