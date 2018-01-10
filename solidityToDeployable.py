@@ -90,8 +90,8 @@ def defineContractObject():
 
                 deployable_contract.write("\"inputs\":[")
                 parameters = line[line.index("(")+1:line.index(")")]
+                inputWeb3 = ""
                 if len(parameters) > 0:
-                    inputWeb3 = ""
                     for input in parameters.split(","):
                         input_info = input.split()
                         if input_info[0] == "uint":
@@ -104,10 +104,10 @@ def defineContractObject():
                 deployable_contract.write("\"name\":\"" + line[line.index("function ")+len("function "):line.index("(")] + "\",")
 
                 deployable_contract.write("\"outputs\":[")
+                outputWeb3 = ""
                 if "returns(" in line:
                     output_declaration = line[line.index("returns(") + len("returns("):]
                     output_declaration = output_declaration[:output_declaration.index(")")]
-                    outputWeb3 = ""
                     for output in output_declaration.split(","):
                         output_info = output.split()
                         if output_info[0] == "uint":
