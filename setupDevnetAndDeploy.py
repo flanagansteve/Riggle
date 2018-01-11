@@ -1,7 +1,14 @@
 #!/usr/bin/python3
 import os, subprocess, random, string, time
-#TODO: test windows support
-def instantiateNetwork(windows=False):
+# TODO: test windows support
+
+# TODO: randomly pick port num
+port_num = "35003"
+devnet_directory = ""
+devnet_address = ""
+devnet_pwd = ""
+def instantiateNetwork(deployable_path, windows=False):
+    global devnet_directory, devnet_address, devnet_pwd
     os.mkdir('devnet_info')
     #TODO: do we let user pick password, or use own random one?
     #      if user picks, then they may reuse a password which we won't store safely
@@ -72,45 +79,35 @@ def instantiateNetwork(windows=False):
         init_geth.close()
         subprocess.check_call(["start", "init_geth.sh"])
 
-    # TODO: miner initalisation not working. something wrong with init_miner.sh.
-    # TODO: randomly pick port
-    port_num = "35003"
-
-    print("Network set up. Run a miner, and then in a new terminal open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
-    print("1. Initialise miner with \"sudo geth --port " + port_num + " --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
-    print("2. pop a remote console with \"sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console\"")
+    #print("Network set up. Run a miner, and then in a new terminal open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
+    #print("1. Initialise miner with \"sudo geth --port " + port_num + " --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
+    #print("2. pop a remote console with \"sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console\"")
 
     # start mining, also executed via shell script
-    #init_miner = open('init_miner.sh', 'w')
-    #init_miner.write("#!/bin/bash\nsudo geth --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
-    #init_miner.write("geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0")
-    #init_miner.close()
-    #miner_script = open('init_miner.sh', 'r')
-    #print(miner_script.readline()+""+miner_script.readline())
-    #miner_script.close()
-    #subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
-    #subprocess.Popen(["sudo", "./init_miner.sh"])
+    init_miner = open('init_miner.sh', 'w')
+    init_miner.write("#!/bin/bash\nsudo geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0 &")
+    init_miner.close()
+    subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
+    subprocess.check_call(["sudo", "./init_miner.sh"])
+    print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. Unlock your account " + devnet_address + " with password " + devnet_pwd + " and set it to eth.accounts[0], copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
 
-# entering into console
-# eth.accounts[0] = \"devnet_address\"
-# eth.defaultAccount = eth.accounts[0]
-# personal.unlockAccount(\"devnet_address\", \"devnet_password\")
-# [possibly] prompt user for constructor parameters
-# copy and paste parameter declarations
-# copy and paste object def and instantiation
-# show user console
-# possibly: run automated interactions with contract
+    # TODO: kill miner after some time
 
 def deployContract(web3_source, windows=False):
-    # TODO:
     # initialise console
-    #print("ie, geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
-    #init_console = open('init_console.sh', 'w')
-    #init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
-    #init_console.close()
-    #subprocess.check_call(["sudo", "chmod", "+rwx", "./init_console.sh"])
-    #subprocess.check_call(["sudo", "./init_console.sh"])
-    pass
+    # TODO: some way to check when miner is up, then launch console. Currently
+    # just hard coding in a delay
+    time.sleep(2.5)
+    #unlock_account = open('unlock_account.sh', 'w')
+    #unlock_account.write("#!/bin/bash\nsudo geth --port " + port_num + " --datadir " + devnet_directory + " account --unlock " + devnet_address + " --password " + devnet_pwd)
+    #unlock_account.close()
+    #subprocess.check_call(["sudo", "chmod", "+rwx", "./unlock_account.sh"])
+    #subprocess.check_call(["sudo", "./unlock_account.sh"])
+    init_console = open('init_console.sh', 'w')
+    init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
+    init_console.close()
+    subprocess.check_call(["sudo", "chmod", "+rwx", "./init_console.sh"])
+    subprocess.check_call(["sudo", "./init_console.sh"])
 
 def cleanUp(windows=False):
     # clean up
@@ -118,17 +115,15 @@ def cleanUp(windows=False):
         os.remove("devnet_info/account1.txt")
         os.remove("devnet_info/devnet_password.txt")
         os.remove("devnet_info/genesis.json")
-        os.rmdir('devnet_info')
-        os.remove("instantiate_geth_account.sh")
-        os.remove("init_geth.sh")
-        #os.remove("init_miner.sh")
-        #os.remove("init_console.sh")
     else:
         os.remove("devnet_info\account1.txt")
         os.remove("devnet_info\devnet_password.txt")
         os.remove("devnet_info\genesis.json")
         os.rmdir('devnet_info')
-        os.remove("instantiate_geth_account.sh")
-        os.remove("init_geth.sh")
-        #os.remove("init_miner.sh")
-        #os.remove("init_console.sh")
+    os.rmdir('devnet_info')
+    os.remove("instantiate_geth_account.sh")
+    os.remove("init_geth.sh")
+    os.remove("init_miner.sh")
+    os.remove("init_console.sh")
+    #os.remove("unlock_account.sh")
+    # TODO: kill miner
