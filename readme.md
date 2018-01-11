@@ -21,9 +21,9 @@ The program will prompt you for the location of your contract and write some dep
 
 Coming soon: 
 
-- 1. Automatic contract deployment, so that you can instantly get to testing your contract once the network console is presented to you
-- 2. automated testing 
-- 3. a full fledged GUI so that you can have a nice IDE to drive you towards becoming a smart contract pro.
+- Automatic contract deployment, so that you can instantly get to testing your contract once the network console is presented to you
+- Automated testing 
+- A full fledged GUI so that you can have a nice IDE to drive you towards becoming a smart contract pro.
 
 I've attached a quick guide for setting up a private ethereum development network to test on, to help you get started. Happy coding! And again, please leave feedback so I can make this tool as useful as possible.
 
