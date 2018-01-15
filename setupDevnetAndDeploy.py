@@ -10,9 +10,6 @@ devnet_pwd = ""
 def instantiateNetwork(deployable_path, windows=False):
     global devnet_directory, devnet_address, devnet_pwd
     os.mkdir('devnet_info')
-    #TODO: do we let user pick password, or use own random one?
-    #      if user picks, then they may reuse a password which we won't store safely
-    #      if randomly generated, user can't use password to reunlock as need be
 
     # generate random directory name, to prevent collisions
     if not windows:
@@ -35,8 +32,6 @@ def instantiateNetwork(deployable_path, windows=False):
     pwd_file.close()
 
     # create account in geth with password from devnet_password, write to account1.txt
-    # there are modules to run terminal commands w/arguments but they're not working right now. So
-    # I'll write a temporary shell script, chmod it, and use that
     instantiate_geth_account = open('instantiate_geth_account.sh', 'w')
     if not windows:
         instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password ./devnet_info/devnet_password.txt > ./devnet_info/account1.txt")
@@ -79,10 +74,6 @@ def instantiateNetwork(deployable_path, windows=False):
         init_geth.close()
         subprocess.check_call(["start", "init_geth.sh"])
 
-    #print("Network set up. Run a miner, and then in a new terminal open an ipc console in a new terminal to " + devnet_directory + "/geth.ipc, on port " + port_num + ", unlock your account " + devnet_address + " with password " + devnet_pwd + ", and deploy! need sudo")
-    #print("1. Initialise miner with \"sudo geth --port " + port_num + " --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0\"")
-    #print("2. pop a remote console with \"sudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console\"")
-
     # start mining, also executed via shell script
     init_miner = open('init_miner.sh', 'w')
     init_miner.write("#!/bin/bash\nsudo geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0 &")
@@ -91,23 +82,27 @@ def instantiateNetwork(deployable_path, windows=False):
     subprocess.check_call(["sudo", "./init_miner.sh"])
     print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. Unlock your account " + devnet_address + " with password " + devnet_pwd + " and set it to eth.accounts[0], copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
 
-    # TODO: kill miner after some time
+    # TODO: kill miner after some time - maybe can specify desired mining time in geth?
 
 def deployContract(web3_source, windows=False):
-    # initialise console
-    # TODO: some way to check when miner is up, then launch console. Currently
+    # TODO: some way to check when miner is up, then launch this. Currently
     # just hard coding in a delay
     time.sleep(2.5)
+    # TODO: unlock account
     #unlock_account = open('unlock_account.sh', 'w')
     #unlock_account.write("#!/bin/bash\nsudo geth --port " + port_num + " --datadir " + devnet_directory + " account --unlock " + devnet_address + " --password " + devnet_pwd)
     #unlock_account.close()
     #subprocess.check_call(["sudo", "chmod", "+rwx", "./unlock_account.sh"])
     #subprocess.check_call(["sudo", "./unlock_account.sh"])
+
+    # initialise console
     init_console = open('init_console.sh', 'w')
     init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
     init_console.close()
     subprocess.check_call(["sudo", "chmod", "+rwx", "./init_console.sh"])
     subprocess.check_call(["sudo", "./init_console.sh"])
+
+    # TODO: somehow input web3 text into geth console.
 
 def cleanUp(windows=False):
     # clean up

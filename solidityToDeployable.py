@@ -18,6 +18,8 @@ except:
 # TODO: potentially handle .sol's with more than one contract
 # and compile separate web3 deploys.
 # TODO: handle structs?
+# TODO: handle multi-line function headers
+
 contract_source = None
 contract_name = None
 deployable_path = None
@@ -212,19 +214,4 @@ def getDeployableContractPath():
 
 def isWindows():
     return windows
-# TODO: should we get the Application Binary Interface from py-solc as well?
-# TODO: Another python file in here that:
-    # creates a genesis.json for each new contract
-    # instantiates accounts
-    # pastes addresses into genesis.json and funds them in the alloc field
-    # instantiates a geth network called <contract name>_net
-    # deploys contract from one of these accounts
-    # pops a console for the developer to interact with their contract on this <contract name>_net
-    # can do this, but with multiple contracts at once
-#init()
-#defineContractObject()
-#instantiateContractObject(input("Which account should deploy the contract?\n"))
-#print("Deployable web3 successfully written at "+deployable_path)
-#print("Assign a value to your constructor parameters, copy and paste the deployment text into a geth console, and fund the deploying account, and your contract will be set to go!")
-#print("If you are testing, be sure to deploy to testrpc or a dev network rather than the main network, as deploying to the main network costs real ether")
-#print("Tips: 0xDE1fa3159b2D8892Ef83648E639F1ee21Fc68F88")
+# TODO: should we get the Application Binary Interface from py-solc as well rather than generating our own?
