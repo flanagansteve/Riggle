@@ -10,6 +10,10 @@ except:
 # and compile separate web3 deploys.
 # TODO: handle structs?
 # TODO: handle multi-line function headers
+# TODO: handle non-first-line pragma
+    # try passing substring of contract to py-geth starting at pragma
+# TODO: handle coding errors gracefully
+# TODO: handle file names that are different from contract name
 
 contract_source = None
 contract_name = None

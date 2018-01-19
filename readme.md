@@ -17,7 +17,17 @@ To use Riggle, download this repository, and write up a contract in Solidity. On
 
     $ python3 riggle/main.py
 
-Riggle will prompt you for the location of your contract source, convert it to web3 deploy text, and write this resulting text to a file called deployable_contractname.txt in your contract's project directory. Next, it will instantiate a private development network running the ethereum protocol, create a loaded account for you to use on it, start a miner for this network, and open a console from which you can interact with this network. All you'll have to do is unlock your account and paste in the web3 deploy text from the deployable_contractname.txt file.
+Riggle will prompt you for the location of your contract source, convert it to web3 deploy text, and write this resulting text to a file called deployable_contractname.txt in your contract's project directory. Next, it will instantiate a private development network running the ethereum protocol, create a loaded account for you to use on it, start a miner for this network, and open a console from which you can interact with this network. All you'll have to do is unlock your account:
+
+    > personal.unlockAccount("0xAddress", "password")
+
+set that account as the first, and default account:
+
+    > eth.defaultAccount = "0xAddress"
+
+    > eth.accounts[0] = eth.defaultAccount
+
+and paste in the web3 deploy text from the deployable_contractname.txt file! Once it mines you'll be able to interact with your cotnract.
 
 On any system, if you'd like to convert your Solidity to web3 deploy text, run:
 
