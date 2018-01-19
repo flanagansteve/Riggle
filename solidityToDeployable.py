@@ -120,7 +120,6 @@ def defineContractObject():
                     output_declaration = output_declaration[:output_declaration.index(")")]
                     outputWeb3 = ""
                     for output in output_declaration.split(","):
-                        print(output_info)
                         output_info = output.split()
                         if output_info[0] == "uint":
                             output_info[0] = "uint256"
