@@ -51,7 +51,7 @@ def instantiateNetwork(deployable_path, windows=False):
     if not windows:
         devnet_address = open('./devnet_info/account1.txt', 'r').readline()
     else:
-        devnet_address = open('./devnet_info/account1.txt', 'r').readline()
+        devnet_address = open('.\devnet_info\account1.txt', 'r').readline()
     devnet_address = devnet_address[devnet_address.index("{")+1:devnet_address.index("}")]
 
     # write to genesis.json, with standard stuff + account address from account1.txt allocated iwth lots of eth
@@ -77,15 +77,15 @@ def instantiateNetwork(deployable_path, windows=False):
         init_geth.close()
         subprocess.check_call(["start", "init_geth.sh"])
 
+    # TODO: support windows
     # start mining, also executed via shell script
     init_miner = open('init_miner.sh', 'w')
     init_miner.write("#!/bin/bash\nsudo geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0 &")
     init_miner.close()
     subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
     subprocess.check_call(["sudo", "./init_miner.sh"])
+    # TODO: fix message to point to correct file path for system (argh windows)
     print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. Unlock your account " + devnet_address + " with password " + devnet_pwd + " and set it to eth.accounts[0], copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
-
-    # TODO: kill miner after some time - maybe can specify desired mining time in geth?
 
 def deployContract(web3_source, windows=False):
     # TODO: some way to check when miner is up, then launch this. Currently
@@ -98,6 +98,7 @@ def deployContract(web3_source, windows=False):
     #subprocess.check_call(["sudo", "chmod", "+rwx", "./unlock_account.sh"])
     #subprocess.check_call(["sudo", "./unlock_account.sh"])
 
+    # TODO: make this work for windows
     # initialise console
     init_console = open('init_console.sh', 'w')
     init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
@@ -114,7 +115,7 @@ def cleanUp(windows=False):
         os.remove("devnet_info/devnet_password.txt")
         os.remove("devnet_info/genesis.json")
     else:
-        os.remove("devnet_info\account1.txt")
+        os.remove("devnet_info\\account1.txt")
         os.remove("devnet_info\devnet_password.txt")
         os.remove("devnet_info\genesis.json")
         os.rmdir('devnet_info')
@@ -123,5 +124,6 @@ def cleanUp(windows=False):
     os.remove("init_geth.sh")
     os.remove("init_miner.sh")
     os.remove("init_console.sh")
+    # TODO: make this work for windows
     subprocess.check_call(["sudo", "pkill", "geth"])
     #os.remove("unlock_account.sh")

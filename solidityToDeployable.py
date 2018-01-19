@@ -36,6 +36,7 @@ def init():
         try:
             contract = open(contract_source, 'r')
         except FileNotFoundError:
+            # TODO: fix warning message to adjust for windows
             contract_source = input("File Not Found\nInput file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Contract.sol,\npresuming you're working from the directory above your project\n")
     try:
         # osx and linux
@@ -204,7 +205,7 @@ def getContractBytecode(contract_source_string):
     try:
         py_solc_result = compile_source(contract_source_string)
     except FileNotFoundError:
-        print("Solc not installed. Please search online and install Solc to use this tool and to develop in Solidity")
+        print("Solc not installed. Please search online and install Solc to use this tool, and to develop in Solidity")
         sys.exit()
     output = py_solc_result['<stdin>:'+contract_name]
     bytecode = output['bin']
