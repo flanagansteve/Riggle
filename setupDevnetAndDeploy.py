@@ -39,6 +39,7 @@ def instantiateNetwork(deployable_path, windows=False):
         instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password ./devnet_info/devnet_password.txt > ./devnet_info/account1.txt")
     else:
         # TODO: which way do these slashes go? especially on the shebang
+        # TODO: does geth work the same way in the cmd prompt as terminal?
         instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password .\devnet_info\devnet_password.txt > .\devnet_info\\account1.txt")
     instantiate_geth_account.close()
     if not windows:
@@ -73,6 +74,8 @@ def instantiateNetwork(deployable_path, windows=False):
         subprocess.check_call(["sudo", "chmod", "+rwx", "./init_geth.sh"])
         subprocess.check_call(["sudo", "./init_geth.sh"])
     else:
+        # TODO: does geth work the same way in the cmd prompt as terminal?
+        # TODO: slashes for shebang?
         init_geth.write("#!/bin/bash\ngeth --verbosity 0 --datadir "+devnet_directory+" init .\devnet_info\genesis.json")
         init_geth.close()
         subprocess.check_call(["start", "init_geth.sh"])
@@ -98,7 +101,8 @@ def deployContract(web3_source, windows=False):
     #subprocess.check_call(["sudo", "chmod", "+rwx", "./unlock_account.sh"])
     #subprocess.check_call(["sudo", "./unlock_account.sh"])
 
-    # TODO: make this work for windows
+    # TODO: does geth work the same way in the cmd prompt as terminal?
+    # TODO: slashes for shebang?
     # initialise console
     init_console = open('init_console.sh', 'w')
     init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
@@ -124,6 +128,8 @@ def cleanUp(windows=False):
     os.remove("init_geth.sh")
     os.remove("init_miner.sh")
     os.remove("init_console.sh")
-    # TODO: make this work for windows
-    subprocess.check_call(["sudo", "pkill", "geth"])
+    if not windows:
+        subprocess.check_call(["sudo", "pkill", "geth"])
+    else:
+        subprocess.check_call(["pskill", "geth"])
     #os.remove("unlock_account.sh")

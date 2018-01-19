@@ -5,16 +5,7 @@ try:
 except:
     print("Install py-solc to use this tool. You can do so with: \"pip3 install py-solc\"")
     sys.exit()
-# this is a tool to convert your Solidity smart contract source
-# code to a deployable web3 format. you can copy and paste the output
-# into a geth console and then interact with your contract from there
 
-# installation requirements: python3, geth, py-solc
-
-# Steve Flanagan of Orion Blockchain Solutions made this, and you can send tips his way at:
-# 0xDE1fa3159b2D8892Ef83648E639F1ee21Fc68F88
-
-# have fun!
 # TODO: potentially handle .sol's with more than one contract
 # and compile separate web3 deploys.
 # TODO: handle structs?
