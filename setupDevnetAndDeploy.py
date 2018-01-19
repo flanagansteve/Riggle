@@ -131,5 +131,6 @@ def cleanUp(windows=False):
     if not windows:
         subprocess.check_call(["sudo", "pkill", "geth"])
     else:
+        # TODO: idk if this works like this
         subprocess.check_call(["pskill", "geth"])
     #os.remove("unlock_account.sh")
