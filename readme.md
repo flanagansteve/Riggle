@@ -1,8 +1,11 @@
-Hello, and thanks for using Riggle! This product is currently in beta, so please, do not hesitate to open issues on this repository so we can continue to improve it.
+Hello, and thanks for using Riggle! This product is currently in beta, so please, do not hesitate to open issues on this repository so we can continue to improve it. This project runs on Python3, and Python2 support is not guaranteed, so please upgrade to use.
 
 # Dependencies
 
-- [Solc](https://github.com/ethereum/solidity/releases): the official Solidity compiler executable. Download the correct archive for your system, extract, and run
+- [Geth](): The go implementation of Ethereum. OSX users can download using "brew install geth"
+- [Solc](https://github.com/ethereum/solidity/releases): the official Solidity compiler executable. Download the correct archive for your system, extract, and run. Alternatively, run:
+    $ brew tap ethereum/ethereum
+    $ brew install solidity
 - [py-solc](https://github.com/pipermerriam/py-solc/): a library that helps convert your smart contract to byte-code. You can install via pip using "pip3 install py-solc"
 
 # Use

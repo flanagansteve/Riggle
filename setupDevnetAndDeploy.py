@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import os, subprocess, random, string, time
 # TODO: test windows support
+    # TODO: does python need to open files using \ for windows? or does it still use /?
 
 # TODO: randomly pick port num
 port_num = "35003"
@@ -36,7 +37,8 @@ def instantiateNetwork(deployable_path, windows=False):
     if not windows:
         instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password ./devnet_info/devnet_password.txt > ./devnet_info/account1.txt")
     else:
-        instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password .\devnet_info\devnet_password.txt > .\devnet_info\account1.txt")
+        # TODO: which way do these slashes go? especially on the shebang
+        instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password .\devnet_info\devnet_password.txt > .\devnet_info\\account1.txt")
     instantiate_geth_account.close()
     if not windows:
         subprocess.check_call(["sudo", "chmod", "+rwx", "./instantiate_geth_account.sh"])

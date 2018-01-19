@@ -53,9 +53,11 @@ def init():
         print("In a contract directory, writing output in project directory: ")
         project_directory = contract_source[:contract_source.index(contract_name+".sol")]
         if windows:
-            project_directory = project_directory[:project_directory.index("\\")+1]
+            project_directory = project_directory[:project_directory.rindex("\\")]
+            project_directory = project_directory[:project_directory.rindex("\\")+1]
         else:
-            project_directory = project_directory[:project_directory.index("/")+1]
+            project_directory = project_directory[:project_directory.rindex("/")]
+            project_directory = project_directory[:project_directory.rindex("/")+1]
         print(project_directory)
         deployable_path = project_directory + "deployable_"+contract_name.lower()+'.txt'
     else:
