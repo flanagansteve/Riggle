@@ -8,8 +8,9 @@ port_num = "35003"
 devnet_directory = ""
 devnet_address = ""
 devnet_pwd = ""
+miner_pid = 0
 def instantiateNetwork(deployable_path, windows=False):
-    global devnet_directory, devnet_address, devnet_pwd
+    global devnet_directory, devnet_address, devnet_pwd, miner_pid
     os.mkdir('devnet_info')
 
     # generate random directory name, to prevent collisions
@@ -122,5 +123,5 @@ def cleanUp(windows=False):
     os.remove("init_geth.sh")
     os.remove("init_miner.sh")
     os.remove("init_console.sh")
+    subprocess.check_call(["sudo", "pkill", "geth"])
     #os.remove("unlock_account.sh")
-    # TODO: kill miner

@@ -47,7 +47,6 @@ def init():
         contract_name = contract_source[contract_source.rindex('\\')+1:contract_source.index('.sol')]
 
     if "/contracts/" in contract_source or "\\contracts\\" in contract_source:
-        # TODO: fix this
         # if in a contracts-only directory, we will save this one directory up,
         # ie the broader project directory
         print("In a contract directory, writing output in project directory: ")
