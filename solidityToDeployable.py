@@ -10,10 +10,7 @@ except:
 # and compile separate web3 deploys.
 # TODO: handle structs?
 # TODO: handle multi-line function headers
-# TODO: handle non-first-line pragma
-    # try passing substring of contract to py-geth starting at pragma
-# TODO: handle coding errors gracefully
-# TODO: handle file names that are different from contract name
+# TODO: handle coding errors gracefully; ie, tell dev what went wrong
 
 contract_source = None
 contract_name = None
@@ -33,6 +30,7 @@ def init():
         except FileNotFoundError:
             # TODO: fix warning message to adjust for windows
             contract_source = input("File Not Found\nInput file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Contract.sol,\npresuming you're working from the directory above your project\n")
+    #TODO: better way to get os. probably a solution in the sys module
     try:
         # osx and linux
         windows = False
@@ -65,9 +63,12 @@ def init():
 
 # create the contract object, including its functions and held values
 def defineContractObject():
-    global constructor_parameters
+    global constructor_parameters, contract_name
     search_for_con_params = open(contract_source, 'r')
     for line in search_for_con_params:
+        if "contract " in line and "{" in line:
+            contract_name = line[line.index("contract ")+len("contract "):]
+            contract_name = contract_name[:contract_name.index(" ")]
         if "function" in line and "//" not in line[:line.index("function")]:
             if " " + contract_name + "(" in line:
                 # is constructor so grab parameters
@@ -179,6 +180,7 @@ def instantiateContractObject(account_sender_index: int):
     deployable_contract.write("\t{\n")
     deployable_contract.write("\t\tfrom: web3.eth.accounts["+str(account_sender_index)+"],\n")
     source = fileToString(contract_source)
+    source = source[source.index("pragma"):]
     deployable_contract.write("\t\tdata: \'0x" + getContractBytecode(source) + "\',\n")
     # TODO: how do I calculate how much gas? remix seems to always use 470000
     deployable_contract.write("\t\tgas: \'470000\'\n")
@@ -203,6 +205,7 @@ def getContractBytecode(contract_source_string):
         sys.exit()
     output = py_solc_result['<stdin>:'+contract_name]
     bytecode = output['bin']
+    # TODO: can get abi from py-solc using output['abi'] - better than parsing?
     return bytecode
 
 def getDeployableContractPath():
@@ -210,4 +213,3 @@ def getDeployableContractPath():
 
 def isWindows():
     return windows
-# TODO: should we get the Application Binary Interface from py-solc as well rather than generating our own?
