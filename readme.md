@@ -43,6 +43,6 @@ Coming soon:
 
 I've attached a quick guide for setting up a private ethereum development network to test on, to help you get started. Happy coding! And again, please leave feedback so I can make this tool as useful as possible.
 
-\- Steve from Orion Blockchain Solutions
+\- Steve from Sublimity LLC
 
 I've released this software for free, to benefit the Solidity community, but tips and support are always appreciated: 0xDE1fa3159b2D8892Ef83648E639F1ee21Fc68F88
