@@ -17,8 +17,8 @@ def opn():
     text.delete(1.0 , END)
     file = open(askopenfilename() , 'r')
     if file != '':
-        txt = file.read()
-        text.insert(INSERT,txt)
+        file_text = file.read()
+        text.insert(INSERT,file_text)
     else:
         pass
 
