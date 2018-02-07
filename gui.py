@@ -1,14 +1,9 @@
 #!/usr/bin/python3
 from tkinter import *
 import tkinter.filedialog
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 import tkinter.messagebox
 from tkinter.colorchooser import askcolor
-import datetime
-from tkinter.filedialog import askopenfilename, asksaveasfilename
-
-def date():
-    data = datetime.date.today()
-    text.insert(INSERT,data)
 
 def font():
     (triple,color) = askcolor()
@@ -17,9 +12,6 @@ def font():
 
 def kill():
     root.destroy()
-
-def about():
-    pass
 
 def opn():
     text.delete(1.0 , END)
@@ -42,10 +34,10 @@ def copy():
 
 def paste():
     try:
-        teext = text.selection_get(selection='CLIPBOARD')
-        text.insert(INSERT, teext)
+        paste = text.selection_get(selection='CLIPBOARD')
+        text.insert(INSERT, paste)
     except:
-        tkinter.messagebox.showerror("Error","The clipboard is empty!")
+        tkinter.messagebox.showerror("Error","The clipboard is empty")
 
 def clear():
     sel = text.get(SEL_FIRST, SEL_LAST)
