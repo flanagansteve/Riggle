@@ -4,6 +4,10 @@ import tkinter.filedialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 import tkinter.messagebox
 from tkinter.colorchooser import askcolor
+from solidityToDeployable import *
+from setupDevnetAndDeploy import *
+
+filename=""
 
 def font():
     (triple,color) = askcolor()
@@ -11,6 +15,7 @@ def font():
        text.config(foreground=color)
 
 def kill():
+    cleanUp(isWindows())
     root.destroy()
 
 def opn():
@@ -19,10 +24,9 @@ def opn():
     if file != '':
         file_text = file.read()
         text.insert(INSERT,file_text)
-    else:
-        pass
 
 def save():
+    global filename
     filename = asksaveasfilename()
     if filename:
         alltext = text.get(1.0, END)
@@ -53,7 +57,17 @@ def background():
 
 #TODO
 def deployToDev():
-    pass
+    #TODO: how get
+    init_from_gui(filename)
+    defineContractObject()
+    instantiateContractObject(0)
+    if not isWindows():
+        instantiateNetwork(getDeployableContractPath(), isWindows())
+        deployContract(fileToString(getDeployableContractPath()), isWindows())
+        cleanUp(isWindows())
+    else:
+        print("Windows system detected. You will have to manually set up a development network")
+        print("Please consult windowsSetup.md in this repository")
 
 #TODO
 def deployToRopsten():
