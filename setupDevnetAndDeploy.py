@@ -11,7 +11,10 @@ devnet_pwd = ""
 miner_pid = 0
 def instantiateNetwork(deployable_path, windows=False):
     global devnet_directory, devnet_address, devnet_pwd, miner_pid
-    os.mkdir('devnet_info')
+    try:
+        os.mkdir('devnet_info')
+    except:
+        pass
 
     # generate random directory name, to prevent collisions
     if not windows:

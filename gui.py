@@ -7,6 +7,21 @@ from tkinter.colorchooser import askcolor
 from solidityToDeployable import *
 from setupDevnetAndDeploy import *
 
+# TODO: keyboard shortcuts for copy, paste, save, open
+# TODO: performance
+# TODO: professionalise appearance,
+    # Riggle tab where Python is
+    # add folder directory thing on side
+    # add file tabs, open multiple at a time
+    # add terminal interaction within gui as opposed to in external terminal window
+    # file name as title
+# TODO: add ide features
+    # tab completion
+    # syntax highlighitng
+    # error warnings
+# TODO: on deploy, put console in focus; on exit, put gui in focus
+# TODO: clean up after every attempt to deploy as opposed to just on quit
+
 filename=""
 
 def font():
@@ -19,13 +34,26 @@ def kill():
     root.destroy()
 
 def opn():
+    global filename
     text.delete(1.0 , END)
-    file = open(askopenfilename() , 'r')
+    filename = askopenfilename()
+    file = open(filename , 'r')
     if file != '':
         file_text = file.read()
         text.insert(INSERT,file_text)
 
 def save():
+    global filename
+    if filename:
+        alltext = text.get(1.0, END)
+        open(filename, 'w').write(alltext)
+    else:
+        filename = asksaveasfilename()
+        if filename:
+            alltext = text.get(1.0, END)
+            open(filename, 'w').write(alltext)
+
+def saveAs():
     global filename
     filename = asksaveasfilename()
     if filename:
@@ -55,7 +83,6 @@ def background():
     if color:
        text.config(background=color)
 
-#TODO: clean up properly on exit in geth
 def deployToDev():
     init_from_gui(filename)
     defineContractObject()
@@ -85,6 +112,7 @@ root.config(menu = menu)
 menu.add_cascade(label="File", menu=filemenu)
 filemenu.add_command(label="Open", command=opn)
 filemenu.add_command(label="Save", command=save)
+filemenu.add_command(label="Save as...", command=saveAs)
 filemenu.add_separator()
 filemenu.add_command(label="Quit", command=kill)
 
