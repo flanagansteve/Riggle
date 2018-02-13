@@ -55,9 +55,8 @@ def background():
     if color:
        text.config(background=color)
 
-#TODO
+#TODO: clean up properly on exit in geth
 def deployToDev():
-    #TODO: how get
     init_from_gui(filename)
     defineContractObject()
     instantiateContractObject(0)

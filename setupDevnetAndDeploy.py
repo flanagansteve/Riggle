@@ -43,8 +43,8 @@ def instantiateNetwork(deployable_path, windows=False):
         instantiate_geth_account.write("#!/bin/bash\ngeth --datadir " + devnet_directory + " account new --password .\devnet_info\devnet_password.txt > .\devnet_info\\account1.txt")
     instantiate_geth_account.close()
     if not windows:
-        subprocess.check_call(["sudo", "chmod", "+rwx", "./instantiate_geth_account.sh"])
-        subprocess.check_call(["sudo", "./instantiate_geth_account.sh"])
+        subprocess.check_call(["chmod", "+rwx", "./instantiate_geth_account.sh"])
+        subprocess.check_call(["./instantiate_geth_account.sh"])
     else:
         subprocess.check_call(["start", "instantiate_geth_account.sh"])
 
@@ -71,8 +71,8 @@ def instantiateNetwork(deployable_path, windows=False):
     if not windows:
         init_geth.write("#!/bin/bash\ngeth --verbosity 0 --datadir "+devnet_directory+" init ./devnet_info/genesis.json")
         init_geth.close()
-        subprocess.check_call(["sudo", "chmod", "+rwx", "./init_geth.sh"])
-        subprocess.check_call(["sudo", "./init_geth.sh"])
+        subprocess.check_call(["chmod", "+rwx", "./init_geth.sh"])
+        subprocess.check_call(["./init_geth.sh"])
     else:
         # TODO: does geth work the same way in the cmd prompt as terminal?
         # TODO: slashes for shebang?
@@ -83,10 +83,10 @@ def instantiateNetwork(deployable_path, windows=False):
     # TODO: support windows
     # start mining, also executed via shell script
     init_miner = open('init_miner.sh', 'w')
-    init_miner.write("#!/bin/bash\nsudo geth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0 &")
+    init_miner.write("#!/bin/bash\ngeth --port " + port_num + " --verbosity 0 --datadir "+devnet_directory+" --mine -minerthreads 1 -etherbase 0 &")
     init_miner.close()
-    subprocess.check_call(["sudo", "chmod", "+rwx", "./init_miner.sh"])
-    subprocess.check_call(["sudo", "./init_miner.sh"])
+    subprocess.check_call(["chmod", "+rwx", "./init_miner.sh"])
+    subprocess.check_call(["./init_miner.sh"])
     # TODO: fix message to point to correct file path for system (argh windows)
     print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. Unlock your account " + devnet_address + " with password " + devnet_pwd + " and set it to eth.accounts[0], copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
 
@@ -96,19 +96,19 @@ def deployContract(web3_source, windows=False):
     time.sleep(2.5)
     # TODO: unlock account
     #unlock_account = open('unlock_account.sh', 'w')
-    #unlock_account.write("#!/bin/bash\nsudo geth --port " + port_num + " --datadir " + devnet_directory + " account --unlock " + devnet_address + " --password " + devnet_pwd)
+    #unlock_account.write("#!/bin/bash\ngeth --port " + port_num + " --datadir " + devnet_directory + " account --unlock " + devnet_address + " --password " + devnet_pwd)
     #unlock_account.close()
-    #subprocess.check_call(["sudo", "chmod", "+rwx", "./unlock_account.sh"])
-    #subprocess.check_call(["sudo", "./unlock_account.sh"])
+    #subprocess.check_call(["chmod", "+rwx", "./unlock_account.sh"])
+    #subprocess.check_call(["./unlock_account.sh"])
 
     # TODO: does geth work the same way in the cmd prompt as terminal?
     # TODO: slashes for shebang?
     # initialise console
     init_console = open('init_console.sh', 'w')
-    init_console.write("#!/bin/bash\nsudo geth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
+    init_console.write("#!/bin/bash\ngeth --port " + port_num + " attach ipc:" + devnet_directory + "/geth.ipc console")
     init_console.close()
-    subprocess.check_call(["sudo", "chmod", "+rwx", "./init_console.sh"])
-    subprocess.check_call(["sudo", "./init_console.sh"])
+    subprocess.check_call(["chmod", "+rwx", "./init_console.sh"])
+    subprocess.check_call(["./init_console.sh"])
 
     # TODO: somehow input web3 text into geth console.
 
@@ -129,7 +129,7 @@ def cleanUp(windows=False):
     os.remove("init_miner.sh")
     os.remove("init_console.sh")
     if not windows:
-        subprocess.check_call(["sudo", "pkill", "geth"])
+        subprocess.check_call(["pkill", "geth"])
     else:
         # TODO: idk if this works like this
         subprocess.check_call(["pskill", "geth"])

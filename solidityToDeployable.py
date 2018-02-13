@@ -14,6 +14,10 @@ except:
     # try passing substring of contract to py-geth starting at pragma
 # TODO: handle coding errors gracefully
 # TODO: handle file names that are different from contract name
+# TODO: create automatically instantiated functions that solc adds:
+    # getters for public variables
+    # can add in input/output to ABI, but how to detail function logic? append
+    # the solidity contract itself? or just give up and use py-solc to get ABI?
 
 contract_source = None
 contract_name = None
@@ -206,9 +210,25 @@ def defineContractObject():
 
                 deployable_contract.write("\"type\":\"function\"")
                 deployable_contract.write("},")
-            # TODO: does the web3 deploy need to know about held values? if so,
-            # find some way to determine whether this line is declaring
-            # a held value. maybe by whitespace
+
+            elif ("mapping (address" in line or "mapping(address" in line) and not "private" in line:
+                #TODO: I'm able to successfully specify input output for a getter -
+                #but how do i actually add the logic in to get mapped values?
+                #append on to contract source perhaps?
+                deployable_contract.write("{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"")
+                deployable_contract.write(line[line.rindex(" ")+1:line.index(";")])
+                deployable_contract.write("\",\"outputs\":[{\"name\":\"\",\"type\":\"")
+                if "=> " in line:
+                    type = line[line.index("=> ")+3:line.index(")")]
+                    if "uint" in type:
+                        type +="256"
+                    deployable_contract.write(type)
+                else:
+                    type = line[line.index("=>")+2:line.index(")")]
+                    if "uint" in type:
+                        type +="256"
+                    deployable_contract.write(type)
+                deployable_contract.write("\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},")
             # TODO: what else might the network need to know about this contract?
         except ValueError as e:
             print(e, line)
@@ -246,6 +266,10 @@ def getContractBytecode(contract_source_string):
         sys.exit()
     output = py_solc_result['<stdin>:'+contract_name]
     bytecode = output['bin']
+    #TODO: retain code for old abi getter, but replace with this one
+    #abi = output['abi']
+    #for b in abi:
+        #deployable_contract.write(b)
     return bytecode
 
 def getDeployableContractPath():
