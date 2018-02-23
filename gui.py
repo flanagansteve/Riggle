@@ -8,21 +8,20 @@ from solidityToDeployable import *
 from setupDevnetAndDeploy import *
 
 # TODO: keyboard shortcuts for copy, paste, save, open
-# TODO: performance
-# TODO: professionalise appearance,
-    # Riggle tab where Python is
-    # add folder directory thing on side
-    # add file tabs, open multiple at a time
-    # add terminal interaction within gui as opposed to in external terminal window
-    # file name as title
+# TODO: performance - gets very slow in geth after multiple deploys
+# TODO: Riggle tab where Python is
+# TODO: add folder directory thing on side
+# TODO: add file tabs, open multiple at a time
+# TODO: add terminal interaction within gui as opposed to in external terminal window
+# TODO: line numbers
 # TODO: add ide features
     # tab completion
     # syntax highlighitng
     # error warnings
 # TODO: on deploy, put console in focus; on exit, put gui in focus
-# TODO: clean up after every attempt to deploy as opposed to just on quit
 
 filename=""
+isNight = False
 
 def font():
     (triple,color) = askcolor()
@@ -39,12 +38,14 @@ def opn():
     filename = askopenfilename()
     file = open(filename , 'r')
     if file != '':
+        root.title(filename + " - Riggle")
         file_text = file.read()
         text.insert(INSERT,file_text)
 
 def save():
     global filename
     if filename:
+        root.title(filename + " - Riggle")
         alltext = text.get(1.0, END)
         open(filename, 'w').write(alltext)
     else:
@@ -57,6 +58,7 @@ def saveAs():
     global filename
     filename = asksaveasfilename()
     if filename:
+        root.title(filename + " - Riggle")
         alltext = text.get(1.0, END)
         open(filename, 'w').write(alltext)
 
@@ -78,10 +80,17 @@ def clear():
 def clearall():
     text.delete(1.0 , END)
 
-def background():
-    (triple,color) = askcolor()
-    if color:
-       text.config(background=color)
+def dayMode():
+    global isNight;
+    isNight = False
+    text.config(foreground='black')
+    text.config(background='white')
+
+def nightMode():
+    global isNight
+    isNight = True
+    text.config(background='black')
+    text.config(foreground='white')
 
 def deployToDev():
     init_from_gui(filename)
@@ -136,7 +145,8 @@ formatmenu.add_cascade(label="Color", command = font)
 
 persomenu = Menu(root)
 menu.add_cascade(label="Personalize",menu=persomenu)
-persomenu.add_command(label="Night mode", command=background)
+persomenu.add_command(label="Day mode", command=dayMode)
+persomenu.add_command(label="Night mode", command=nightMode)
 
 helpmenu = Menu(menu)
 menu.add_cascade(label="Help", menu=helpmenu)
