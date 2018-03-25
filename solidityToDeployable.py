@@ -1,13 +1,12 @@
 #!/usr/bin/python3
-import sys
+import sys, subprocess
 try:
     from solc import compile_source, compile_files, compile_standard
 except:
     print("Install py-solc to use this tool. You can do so with: \"pip3 install py-solc\"")
     sys.exit()
 
-# TODO: potentially handle .sol's with more than one contract
-# and compile separate web3 deploys.
+# TODO: potentially handle .sol's with more than one contract and compile separate web3 deploys.
     # TODO: also have to handle inheritance and extension
 # TODO: handle structs?
 # TODO: handle multi-line function headers
@@ -114,6 +113,8 @@ def init_from_gui(contract_s):
 # create the contract object, including its functions and held values
 def defineContractObject():
     global constructor_parameters
+    # clear the constructor params
+    constructor_parameters = list()
     search_for_con_params = open(contract_source, 'r')
     for line in search_for_con_params:
         if "function" in line and "//" not in line[:line.index("function")]:
@@ -236,6 +237,46 @@ def defineContractObject():
 
     deployable_contract.write("\b])\n")
     contract.close()
+    #Alternative, use py-solc to get abi too. But that limits other stuff
+    #try:
+    #    py_solc_result = compile_source(contract_source_string)
+    #except FileNotFoundError:
+    #    print("Solc not installed. Please search online and install Solc to use this tool, and to develop in Solidity")
+    #    sys.exit()
+    #output = py_solc_result['<stdin>:'+contract_name]
+    #deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract([")
+    #deployable_contract.write(output['abi']+"\n")
+
+def defineContractObjectViaSolc():
+    global constructor_parameters
+    # clear the constructor params
+    constructor_parameters = list()
+    search_for_con_params = open(contract_source, 'r')
+    for line in search_for_con_params:
+        if "function" in line and "//" not in line[:line.index("function")]:
+            if " " + contract_name + "(" in line:
+                # is constructor so grab parameters
+                parameters = line[line.index("(")+1:line.index(")")]
+                if len(parameters) > 0:
+                    for input in parameters.split(","):
+                        input_info = input.split()
+                        deployable_contract.write("var " + input_info[1] + " = /* insert " + input_info[0] + " here */;\n")
+                        constructor_parameters.append(input_info)
+    search_for_con_params.close()
+    #TODO: in progress, handling multiple contracts in one file
+    #deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract(")
+    #abi = str(subprocess.check_output(["solc", "--abi", contract_source]))
+    #abi_list = abi.split("=======\\nContract JSON ABI \\n")
+    #for contract_abi in abi_list:
+    #    print(contract_abi)
+    #abi = abi[:abi.index("\\n")] + "\n"
+    #deployable_contract.write(abi)
+    deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract(")
+    abi = str(subprocess.check_output(["solc", "--abi", contract_source]))
+    abi = abi[abi.index("\\nContract JSON ABI \\n") + len("\\nContract JSON ABI \\n"):]
+    abi = abi[:abi.index("\\n")] + "\n"
+    deployable_contract.write(abi)
+
 def instantiateContractObject(account_sender_index: int):
     deployable_contract.write("var "+contract_name.lower()+" = "+contract_name.lower()+"Contract.new(\n")
     for constructor_param in constructor_parameters:
@@ -270,6 +311,7 @@ def getContractBytecode(contract_source_string):
     #TODO: retain code for old abi getter, but replace with this one
     #abi = output['abi']
     #for b in abi:
+    #    print(b)
         #deployable_contract.write(b)
     return bytecode
 

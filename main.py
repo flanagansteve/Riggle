@@ -12,6 +12,7 @@ from setupDevnetAndDeploy import *
     # osx/linux: edit bash profile
 init()
 defineContractObject()
+#defineContractObjectViaSolc()
 instantiateContractObject(0)
 if not isWindows():
     instantiateNetwork(getDeployableContractPath(), isWindows())
