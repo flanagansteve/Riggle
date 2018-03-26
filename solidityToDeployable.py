@@ -6,18 +6,8 @@ except:
     print("Install py-solc to use this tool. You can do so with: \"pip3 install py-solc\"")
     sys.exit()
 
-# TODO: potentially handle .sol's with more than one contract and compile separate web3 deploys.
-    # TODO: also have to handle inheritance and extension
-# TODO: handle structs?
-# TODO: handle multi-line function headers
-# TODO: handle non-first-line pragma
-    # try passing substring of contract to py-geth starting at pragma
+# TODO: handle libraries
 # TODO: handle contract coding errors gracefully
-# TODO: handle file names that are different from contract name
-# TODO: create automatically instantiated functions that solc adds:
-    # getters for public variables
-    # can add in input/output to ABI, but how to detail function logic? append
-    # the solidity contract itself? or just give up and use py-solc to get ABI?
 
 contract_source = None
 contract_name = None
@@ -252,7 +242,7 @@ def defineContractObjects():
         contract_names.append(contractName)
         contract_abi = contract_abi[contract_abi.index("\\n[")+2:]
         contract_abi = contract_abi[:contract_abi.index("\\n")]
-        deployable_contract.write("var " + contractName.lower() + "Contract = web3.eth.contract("+contract_abi+"\n")
+        deployable_contract.write("var " + contractName.lower() + "Contract = web3.eth.contract("+contract_abi+")\n")
 
 def getConstructorParams():
     global constructor_parameters, search_for_con_params
@@ -293,6 +283,7 @@ def instantiateContractObject(account_sender_index: int):
     deployable_contract.close()
 
 def instantiateContractObjects(account_sender_index: int, contractName):
+    #TODO: handle libraries
     deployable_contract.write("var "+contractName.lower()+" = "+contractName.lower()+"Contract.new(\n")
     for constructor_param in constructor_parameters:
         if constructor_param[2] == contractName:
