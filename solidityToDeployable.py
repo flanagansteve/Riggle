@@ -300,7 +300,7 @@ def instantiateContractObjects(account_sender_index: int, contractName):
                 contractByte = contractByte[:contractByte.rindex("\\n")]
     deployable_contract.write("\t\tdata: \'0x" + contractByte + "\',\n")
     # TODO: how do I calculate how much gas? remix seems to always use 470000
-    deployable_contract.write("\t\tgas: \'470000\'\n")
+    deployable_contract.write("\t\tgas: \'47000000\'\n")
     deployable_contract.write("\t}, function(e, contract){\n")
     deployable_contract.write("\t\tconsole.log(e, contract);\n")
     deployable_contract.write("\t\tif (typeof contract.address != 'undefined') {\n")
