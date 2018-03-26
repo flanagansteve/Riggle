@@ -26,6 +26,7 @@ contract = None
 deployable_contract = None
 windows = None
 constructor_parameters = list()
+abi_list = None
 
 def init():
     global contract_source, contract, deployable_path, deployable_contract, windows, contract_name
@@ -111,6 +112,7 @@ def init_from_gui(contract_s):
     contract = open(contract_source, 'r')
 
 # create the contract object, including its functions and held values
+# DEPRECATED. Now interfacing with solc directly, rather than manually compiling
 def defineContractObject():
     global constructor_parameters
     # clear the constructor params
@@ -237,45 +239,41 @@ def defineContractObject():
 
     deployable_contract.write("\b])\n")
     contract.close()
-    #Alternative, use py-solc to get abi too. But that limits other stuff
-    #try:
-    #    py_solc_result = compile_source(contract_source_string)
-    #except FileNotFoundError:
-    #    print("Solc not installed. Please search online and install Solc to use this tool, and to develop in Solidity")
-    #    sys.exit()
-    #output = py_solc_result['<stdin>:'+contract_name]
-    #deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract([")
-    #deployable_contract.write(output['abi']+"\n")
 
-def defineContractObjectViaSolc():
-    global constructor_parameters
+def defineContractObjects():
+    global abi_list, contract_names
+    abi = str(subprocess.check_output(["solc", "--abi", contract_source]))
+    abi_list = abi.split("======= " + contract_source + ":")
+    contract_names = list()
+    for contract_abi in abi_list:
+        if len(contract_abi) < 10:
+            continue
+        contractName = contract_abi[:contract_abi.index(" =======\\n")]
+        contract_names.append(contractName)
+        contract_abi = contract_abi[contract_abi.index("\\n[")+2:]
+        contract_abi = contract_abi[:contract_abi.index("\\n")]
+        deployable_contract.write("var " + contractName.lower() + "Contract = web3.eth.contract("+contract_abi+"\n")
+
+def getConstructorParams():
+    global constructor_parameters, search_for_con_params
     # clear the constructor params
     constructor_parameters = list()
     search_for_con_params = open(contract_source, 'r')
     for line in search_for_con_params:
-        if "function" in line and "//" not in line[:line.index("function")]:
-            if " " + contract_name + "(" in line:
-                # is constructor so grab parameters
-                parameters = line[line.index("(")+1:line.index(")")]
-                if len(parameters) > 0:
-                    for input in parameters.split(","):
-                        input_info = input.split()
-                        deployable_contract.write("var " + input_info[1] + " = /* insert " + input_info[0] + " here */;\n")
-                        constructor_parameters.append(input_info)
-    search_for_con_params.close()
-    #TODO: in progress, handling multiple contracts in one file
-    #deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract(")
-    #abi = str(subprocess.check_output(["solc", "--abi", contract_source]))
-    #abi_list = abi.split("=======\\nContract JSON ABI \\n")
-    #for contract_abi in abi_list:
-    #    print(contract_abi)
-    #abi = abi[:abi.index("\\n")] + "\n"
-    #deployable_contract.write(abi)
-    deployable_contract.write("var " + contract_name.lower() + "Contract = web3.eth.contract(")
-    abi = str(subprocess.check_output(["solc", "--abi", contract_source]))
-    abi = abi[abi.index("\\nContract JSON ABI \\n") + len("\\nContract JSON ABI \\n"):]
-    abi = abi[:abi.index("\\n")] + "\n"
-    deployable_contract.write(abi)
+        for con in contract_names:
+            if "function " in line and "//" not in line[:line.index("function")]:
+                if " " + con + "(" in line:
+                    # is constructor so grab parameters
+                    parameters = line[line.index("(")+1:line.index(")")]
+                    if len(parameters) > 0:
+                        for input in parameters.split(","):
+                            input_info = input.split()
+                            input_info.append(con)
+                            deployable_contract.write("var " + input_info[1] + " = /* insert " + input_info[0] + " here */;\n")
+                            constructor_parameters.append(input_info)
+    for contract in contract_names:
+        instantiateContractObjects(0, contract)
+    deployable_contract.close()
 
 def instantiateContractObject(account_sender_index: int):
     deployable_contract.write("var "+contract_name.lower()+" = "+contract_name.lower()+"Contract.new(\n")
@@ -294,25 +292,45 @@ def instantiateContractObject(account_sender_index: int):
     deployable_contract.write("\t})\n")
     deployable_contract.close()
 
+def instantiateContractObjects(account_sender_index: int, contractName):
+    deployable_contract.write("var "+contractName.lower()+" = "+contractName.lower()+"Contract.new(\n")
+    for constructor_param in constructor_parameters:
+        if constructor_param[2] == contractName:
+            deployable_contract.write("\t" + constructor_param[1] + ",\n")
+    deployable_contract.write("\t{\n")
+    deployable_contract.write("\t\tfrom: web3.eth.accounts["+str(account_sender_index)+"],\n")
+    bytecodes = str(subprocess.check_output(["solc", "--bin", contract_source]))
+    bytecode_list = bytecodes.split("======= "+contract_source+":")
+    contractByte = ""
+    for byte in bytecode_list:
+        if contractName in byte:
+            contractByte = byte[byte.index("Binary: \\n")+len("Binary: \\n"):byte.rindex("\\n")]
+            if "\\n" in contractByte:
+                contractByte = contractByte[:contractByte.rindex("\\n")]
+    deployable_contract.write("\t\tdata: \'0x" + contractByte + "\',\n")
+    # TODO: how do I calculate how much gas? remix seems to always use 470000
+    deployable_contract.write("\t\tgas: \'470000\'\n")
+    deployable_contract.write("\t}, function(e, contract){\n")
+    deployable_contract.write("\t\tconsole.log(e, contract);\n")
+    deployable_contract.write("\t\tif (typeof contract.address != 'undefined') {\n")
+    deployable_contract.write("\t\t\tconsole.log(\'Contract successfully mined. address: \' + contract.address + \' transactionHash: \' + contract.transactionHash);\n\t\t}\n")
+    deployable_contract.write("\t})\n")
+
 def fileToString(file_path):
     output = ""
     for line in open(file_path, "r"):
         output+=(line+"\n")
     return output
 
-def getContractBytecode(contract_source_string):
+def getContractBytecode(contract_source_string, contractName):
+    print(contract_source_string)
     try:
         py_solc_result = compile_source(contract_source_string)
     except FileNotFoundError:
         print("Solc not installed. Please search online and install Solc to use this tool, and to develop in Solidity")
         sys.exit()
-    output = py_solc_result['<stdin>:'+contract_name]
+    output = py_solc_result['<stdin>:'+contractName]
     bytecode = output['bin']
-    #TODO: retain code for old abi getter, but replace with this one
-    #abi = output['abi']
-    #for b in abi:
-    #    print(b)
-        #deployable_contract.write(b)
     return bytecode
 
 def getDeployableContractPath():
@@ -320,4 +338,3 @@ def getDeployableContractPath():
 
 def isWindows():
     return windows
-# TODO: should we get the Application Binary Interface from py-solc as well rather than generating our own?

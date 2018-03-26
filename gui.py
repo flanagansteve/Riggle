@@ -94,8 +94,8 @@ def nightMode():
 
 def deployToDev():
     init_from_gui(filename)
-    defineContractObject()
-    instantiateContractObject(0)
+    defineContractObjects()
+    getConstructorParams()
     if not isWindows():
         instantiateNetwork(getDeployableContractPath(), isWindows())
         deployContract(fileToString(getDeployableContractPath()), isWindows())

@@ -91,7 +91,7 @@ def instantiateNetwork(deployable_path, windows=False):
     subprocess.check_call(["chmod", "+rwx", "./init_miner.sh"])
     subprocess.check_call(["./init_miner.sh"])
     # TODO: fix message to point to correct file path for system (argh windows)
-    print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. Unlock your account " + devnet_address + " with password " + devnet_pwd + " and set it to eth.accounts[0], copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
+    print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. Unlock your account " + devnet_address + " with password " + devnet_pwd + " and set it to eth.defaultAccount, copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
 
 def deployContract(web3_source, windows=False):
     # TODO: some way to check when miner is up, then launch this. Currently
