@@ -11,21 +11,20 @@ Hello, and thanks for using Riggle! This product is currently in beta, so please
 
 - [py-solc](https://github.com/pipermerriam/py-solc/): a library that helps convert your smart contract to byte-code. You can install via pip using "pip3 install py-solc"
 
-# Use
+## Use
 
+# Command Line Interface
 To use Riggle, download this repository, and write up a contract in Solidity. On Linux or OSX, run:
 
     $ python3 riggle/main.py
 
 Riggle will prompt you for the location of your contract source, convert it to web3 deploy text, and write this resulting text to a file called deployable_contractname.txt in your contract's project directory. Next, it will instantiate a private development network running the ethereum protocol, create a loaded account for you to use on it, start a miner for this network, and open a console from which you can interact with this network. All you'll have to do is unlock your account:
 
-    > personal.unlockAccount("0xAddress", "password")
+    > personal.unlockAccount(eth.accounts[0], "password")
 
-set that account as the first, and default account:
+set that account as the default account:
 
-    > eth.defaultAccount = "0xAddress"
-
-    > eth.accounts[0] = eth.defaultAccount
+    > eth.defaultAccount = eth.accounts[0]
 
 and paste in the web3 deploy text from the deployable_contractname.txt file! Once it mines you'll be able to interact with your cotnract.
 
@@ -35,7 +34,15 @@ On any system, if you'd like to convert your Solidity to web3 deploy text, run:
 
 The program will prompt you for the location of your contract and write some deployable web3 text to deployable_contractname.txt in your project directory. You can then copy and paste this deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded. Follow the instructions in the howToSetupPrivateEthNet.txt for more details on how to do this.
 
-Coming soon: 
+# GUI
+
+To run the gui, open a terminal/command prompt and run:
+
+    $ python3 riggle/gui.py
+
+The GUI comes with a menu bar with several options that are self-explanatory. Specifically, deploy contracts by clicking on the "Deploy" menu and selecting "Deploy to devnet." Ropsten and mainnet deployment are coming soon!
+
+Keep your eyes out for new features:
 
 - Automatic contract deployment, so that you can instantly get to testing your contract once the network console is presented to you
 - Automated testing 
