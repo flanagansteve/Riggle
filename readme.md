@@ -11,14 +11,14 @@ Hello, and thanks for using Riggle! This product is currently in beta, so please
 
 - [py-solc](https://github.com/pipermerriam/py-solc/): a library that helps convert your smart contract to byte-code. You can install via pip using "pip3 install py-solc"
 
-## Use
+# Use
 
-# Command Line Interface
-To use Riggle, download this repository, and write up a contract in Solidity. On Linux or OSX, run:
+## Command Line Interface
+To use Riggle, download this repository, and write up a contract in Solidity. In a terminal or command prompt, run:
 
     $ python3 riggle/main.py
 
-Riggle will prompt you for the location of your contract source, convert it to web3 deploy text, and write this resulting text to a file called deployable_contractname.txt in your contract's project directory. Next, it will instantiate a private development network running the ethereum protocol, create a loaded account for you to use on it, start a miner for this network, and open a console from which you can interact with this network. All you'll have to do is unlock your account:
+Riggle will prompt you for the location of your contract source, convert it to web3 deploy text, and write this resulting text to a file called deployable_contractname.txt in your contract's project directory. On OSX or Linux systems, it will instantiate a private development network running the ethereum protocol, create a loaded account for you to use on it, start a miner for this network, and open a console from which you can interact with this network. All you'll have to do is unlock your account:
 
     > personal.unlockAccount(eth.accounts[0], "password")
 
@@ -26,15 +26,11 @@ set that account as the default account:
 
     > eth.defaultAccount = eth.accounts[0]
 
-and paste in the web3 deploy text from the deployable_contractname.txt file! Once it mines you'll be able to interact with your cotnract.
+and paste in the web3 deploy text from the deployable_contractname.txt file! Once the contract mines you'll be able to interact with your cotnract.
 
-On any system, if you'd like to convert your Solidity to web3 deploy text, run:
+Currently, on Windows, you can copy and paste the deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded, but Riggle will not set up the development network for you. Follow the instructions in the howToSetupPrivateEthNet.txt for more details on how to do this.
 
-    $ python3 riggle/solidityToDeployable.py
-
-The program will prompt you for the location of your contract and write some deployable web3 text to deployable_contractname.txt in your project directory. You can then copy and paste this deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded. Follow the instructions in the howToSetupPrivateEthNet.txt for more details on how to do this.
-
-# GUI
+## GUI
 
 To run the gui, open a terminal/command prompt and run:
 
