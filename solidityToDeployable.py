@@ -17,10 +17,15 @@ deployable_contract = None
 windows = None
 constructor_parameters = list()
 abi_list = None
+compiling = True;
 
 def init():
-    global contract_source, contract, deployable_path, deployable_contract, windows, contract_name
+    global compiling, contract_source, contract, deployable_path, deployable_contract, windows, contract_name
     contract_source = input("Where's the solidity source for this contract?\n")
+    if contract_source == "":
+        print("Skipping contract compilation and spinning up devnet")
+        compiling = False
+        return
     contract = None
     while(contract is None):
         try:
@@ -105,6 +110,8 @@ def init_from_gui(contract_s):
 # DEPRECATED. Now interfacing with solc directly, rather than manually compiling
 def defineContractObject():
     global constructor_parameters
+    if not compiling:
+        return
     # clear the constructor params
     constructor_parameters = list()
     search_for_con_params = open(contract_source, 'r')
@@ -232,6 +239,8 @@ def defineContractObject():
 
 def defineContractObjects():
     global abi_list, contract_names
+    if not compiling:
+        return
     abi = str(subprocess.check_output(["solc", "--abi", contract_source]))
     abi_list = abi.split("======= " + contract_source + ":")
     contract_names = list()
@@ -246,6 +255,8 @@ def defineContractObjects():
 
 def getConstructorParams():
     global constructor_parameters, search_for_con_params
+    if not compiling:
+        return
     # clear the constructor params
     constructor_parameters = list()
     search_for_con_params = open(contract_source, 'r')
@@ -266,6 +277,8 @@ def getConstructorParams():
     deployable_contract.close()
 
 def instantiateContractObject(account_sender_index: int):
+    if not compiling:
+        return
     deployable_contract.write("var "+contract_name.lower()+" = "+contract_name.lower()+"Contract.new(\n")
     for constructor_param in constructor_parameters:
         deployable_contract.write("\t" + constructor_param[1] + ",\n")
@@ -283,6 +296,8 @@ def instantiateContractObject(account_sender_index: int):
     deployable_contract.close()
 
 def instantiateContractObjects(account_sender_index: int, contractName):
+    if not compiling:
+        return
     #TODO: handle libraries
     deployable_contract.write("var "+contractName.lower()+" = "+contractName.lower()+"Contract.new(\n")
     for constructor_param in constructor_parameters:
@@ -325,7 +340,10 @@ def getContractBytecode(contract_source_string, contractName):
     return bytecode
 
 def getDeployableContractPath():
-    return deployable_path
+    if compiling:
+        return deployable_path
+    else:
+        return "Only want devnet"
 
 def isWindows():
     return windows
