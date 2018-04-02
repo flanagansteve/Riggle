@@ -26,7 +26,9 @@ set that account as the default account:
 
     > eth.defaultAccount = eth.accounts[0]
 
-and paste in the web3 deploy text from the deployable_contractname.txt file! Once the contract mines you'll be able to interact with your cotnract.
+and paste in the web3 deploy text from the deployable_contractname.txt file! Once the contract mines you'll be able to interact with your contract.
+
+To simply spin up a development network, without providing a contract to compile, just press enter when you are prompted for a file to compile.
 
 Currently, on Windows, you can copy and paste the deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded, but Riggle will not set up the development network for you. Follow the instructions in the howToSetupPrivateEthNet.txt for more details on how to do this.
 
