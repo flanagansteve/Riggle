@@ -4,7 +4,7 @@
 
 Set the password for your accounts:
 
-    > notepad password.txt
+    > echo password > password.txt
 
 Create the account in a new chain called devnet:
 
@@ -40,7 +40,7 @@ And set up a miner:
 
 In a new command prompt window, open a geth console attached to your custom chain:
 
-		> geth attach ipc:./.ethereum/devnet/geth.ipc console
+    > geth attach ipc:./.ethereum/devnet/geth.ipc console
 
 Set your loaded account as the default:
 
