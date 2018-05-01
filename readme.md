@@ -4,12 +4,14 @@ Hello, and thanks for using Riggle! This product is currently in beta, so please
 
 - [Geth](https://github.com/ethereum/go-ethereum/wiki/Building-Ethereum): The GoLang implementation of Ethereum. OSX users can download using "brew install geth"
 - [Solc](https://github.com/ethereum/solidity/releases): the official Solidity compiler executable. Download the correct archive for your system, extract, and run. Alternatively, run:
-    
+
     $ brew tap ethereum/ethereum
-    
+
     $ brew install solidity
 
 - [py-solc](https://github.com/pipermerriam/py-solc/): a library that helps convert your smart contract to byte-code. You can install via pip using "pip3 install py-solc"
+
+- [TKinter](https://wiki.python.org/moin/TkInter): the python library that runs the GUI. TKinter should come with OSX and Windows' Python installations. Install TKinter on Linux via "sudo apt-get install python3-tk"
 
 # Use
 
@@ -43,7 +45,7 @@ The GUI comes with a menu bar with several options that are self-explanatory. Sp
 Keep your eyes out for new features:
 
 - Automatic contract deployment, so that you can instantly get to testing your contract once the network console is presented to you
-- Automated testing 
+- Automated testing
 - A full fledged GUI so that you can have a nice IDE to drive you towards becoming a smart contract pro.
 
 I've attached a quick guide for setting up a private ethereum development network to test on, to help you get started. Happy coding! And again, please leave feedback so I can make this tool as useful as possible.

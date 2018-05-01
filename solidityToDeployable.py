@@ -21,7 +21,7 @@ compiling = True;
 
 def init():
     global compiling, contract_source, contract, deployable_path, deployable_contract, windows, contract_name
-    contract_source = input("Where's the solidity source for this contract?\n")
+    contract_source = input("What is the path to the contract? Press Enter to just set up a private devnet\n")
     if contract_source == "":
         print("Skipping contract compilation and spinning up devnet")
         compiling = False

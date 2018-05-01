@@ -92,9 +92,9 @@ def instantiateNetwork(deployable_path, windows=False):
     subprocess.check_call(["./init_miner.sh"])
     # TODO: fix message to point to correct file path for system (argh windows)
     if deployable_path == "Only want devnet":
-        print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. \nUnlock your account using: \n\tpersonal.unlockAccount(eth.accounts[0], \"" + devnet_pwd + "\")\nand set it to eth.defaultAccount via: \n\teth.defaultAccount = eth.accounts[0]\n")
+        print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. \nUnlock your account using: \n\tpersonal.unlockAccount(eth.accounts[0], \"" + devnet_pwd + "\", 0)\nand set it to eth.defaultAccount via: \n\teth.defaultAccount = eth.accounts[0]\n")
     else:
-        print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. \nUnlock your account using: \n\tpersonal.unlockAccount(eth.accounts[0], \"" + devnet_pwd + "\")\nand set it to eth.defaultAccount via: \n\teth.defaultAccount = eth.accounts[0]\nThen, copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
+        print("Your development network is set up with a miner runnng and a loaded account for you to deploy from. \nUnlock your account using: \n\tpersonal.unlockAccount(eth.accounts[0], \"" + devnet_pwd + "\", 0)\nand set it to eth.defaultAccount via: \n\teth.defaultAccount = eth.accounts[0]\nThen, copy and paste the deployment text from " + deployable_path + " into the console, and begin interacting with your contract!")
 
 def deployContract(web3_source, windows=False):
     # TODO: some way to check when miner is up, then launch this. Currently
