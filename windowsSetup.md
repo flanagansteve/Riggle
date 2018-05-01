@@ -1,27 +1,37 @@
-Here's a quick guide to how I set up and tested Riggle on a windows machine that had never run any Solidity before. Hopefully it works for you too. I come from a Linux/OSX background, so there very well may be a better way to do this
+#How to create a private development network in geth for windows
 
-1. Download a .zip of this git repo
-2. Extract
-3. Download solidity from the solidity-windows.zip file at https://github.com/ethereum/solidity/releases
-4. Extract that to the same parent directory as Riggle
-5. Install py-solc using:
-	C:\Python34\Scripts\pip3.exe install py-solc
-6. Run the solidityToDeployable.py file by using:
-	C:\Python34\python.exe C:\<your extracted directory>\solidityToDeployable.py
-7. Use as directed in readme
+## First, in the command prompt:
 
-To manually set up a dev network:
+> notepad password.txt //set general account pwd
+> geth --datadir ./.ethereum/devnet --password ./password.txt account new > account1.txt
+> notepad account1.txt //copy and paste address from notepad, will appear like this:
+Address: {e832bbf754d08adc051cd3787474b39edc18bb95}
+> notepad genesis.json //create genesis file if need be: https://github.com/ethereum/go-ethereum/wiki/Private-network [lower difficulty/increase funding at your preference]
+> notepad genesis.json //paste address into 'alloc' field
+$ geth --datadir ./.ethereum/devnet init genesis.json
+$ geth --datadir ./.ethereum/devnet --mine -minerthreads 1 -etherbase 0
 
-1. [Install geth](https://github.com/ethereum/go-ethereum/wiki/Installation-instructions-for-Windows)
-2. Set the path variable for geth:
-    > ...
-3. Instantiate the development account from a password.txt file:
-    > ...
-4. Create a genesis.json file that geth will use as the initial conditions for your network:
-    > ... todo: write a script for this
-5. Create the development network via geth, referencing the genesis file:
-    > ...
-6. Run a miner for this network:
-    > ...
-7. In a new command prompt window, attach a console to this network and begin interacting!
-    > ...
+## In a new command prompt window:
+> geth attach ipc:./.ethereum/devnet/geth.ipc console
+
+## now, in the geth console you just opened:
+> eth.defaultAccount = eth.accounts[0]
+> personal.unlockAccount(eth.accounts[0], “password from password.txt”)
+
+and now you're ready to deploy a contract!
+
+# Deploy a contract
+If you've been using Riggle, the deployable contract text can be found in [myDappProjectDirectory]/deployable_contractname.txt.
+
+Copy and paste the deployable text into the geth console, after unlocking your account (see above)
+
+> var contractNameContract = ... // this is the contract object definition
+> var param1 = ...; // set the constructor constructor parameters
+> var contractName = new contratNameContract({... // this instantiates the contract
+
+Once you receive a "Contract mined successfully ..." message, you are ready to interact with the contract.
+
+# Clean up
+Making a private devnet will leave behind some old data. Remove it on windows via:
+> rmdir ./.ethereum/devnet
+> del account1.txt
