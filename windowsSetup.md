@@ -2,21 +2,44 @@
 
 ## First, in the command prompt:
 
-    \> notepad password.txt //set general account pwd
-    \> geth --datadir ./.ethereum/devnet --password ./password.txt account new > account1.txt
-    \> notepad account1.txt //copy and paste address from notepad, will appear like this:
-Address: {e832bbf754d08adc051cd3787474b39edc18bb95}
-    \> notepad genesis.json //create genesis file if need be: https://github.com/ethereum/go-ethereum/wiki/Private-network [lower difficulty/increase funding at your preference]
-    \> notepad genesis.json //paste address into 'alloc' field
-    \> geth --datadir ./.ethereum/devnet init genesis.json
-    \> geth --datadir ./.ethereum/devnet --mine -minerthreads 1 -etherbase 0
+Set the password for your accounts:
+    > notepad password.txt
 
-## In a new command prompt window:
-    \> geth attach ipc:./.ethereum/devnet/geth.ipc console
+Create the account in a new chain called devnet:
+    > geth --datadir ./.ethereum/devnet --password ./password.txt account new > account1.txt
 
-## now, in the geth console you just opened:
-    \> eth.defaultAccount = eth.accounts[0]
-    \> personal.unlockAccount(eth.accounts[0], “password from password.txt”)
+Copy and paste the address for this new account:
+		> notepad account1.txt
+
+Create a genesis file of this form, putting your account from account1.txt in the alloc field, and save it as genesis.json:
+    {
+        "config": {
+            "chainId": 15,
+            "homesteadBlock": 0,
+            "eip155Block": 0,
+            "eip158Block": 0
+        },
+        "difficulty": "200",
+        "gasLimit": "2100000000000",
+        "alloc": {
+            "YOUR ADDRESS HERE": { "balance": "99999999999999999999999999999999999999" }
+        }
+    }
+
+Next, initialise the blockchain:
+    > geth --datadir ./.ethereum/devnet init genesis.json
+
+And set up a miner:
+    > geth --datadir ./.ethereum/devnet --mine -minerthreads 1 -etherbase 0
+
+In a new command prompt window, open a geth console attached to your custom chain:
+		> geth attach ipc:./.ethereum/devnet/geth.ipc console
+
+Set your loaded account as the default:
+    > eth.defaultAccount = eth.accounts[0]
+
+Unlock it:
+    > personal.unlockAccount(eth.accounts[0], “password from password.txt”, 0)
 
 and now you're ready to deploy a contract!
 
@@ -25,13 +48,13 @@ If you've been using Riggle, the deployable contract text can be found in [myDap
 
 Copy and paste the deployable text into the geth console, after unlocking your account (see above)
 
-    \> var contractNameContract = ... // this is the contract object definition
-    \> var param1 = ...; // set the constructor constructor parameters
-    \> var contractName = new contratNameContract({... // this instantiates the contract
+    > var contractNameContract = ... // this is the contract object definition
+    > var param1 = ...; // set the constructor constructor parameters
+    > var contractName = new contratNameContract({... // this instantiates the contract
 
 Once you receive a "Contract mined successfully ..." message, you are ready to interact with the contract.
 
 # Clean up
 Making a private devnet will leave behind some old data. Remove it on windows via:
-    \> rmdir ./.ethereum/devnet
-    \> del account1.txt
+    > rmdir ./.ethereum/devnet
+    > del account1.txt
