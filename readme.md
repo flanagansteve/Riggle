@@ -22,7 +22,7 @@ To use Riggle, download this repository, and write up a contract in Solidity. In
 
 Riggle will prompt you for the location of your contract source, convert it to web3 deploy text, and write this resulting text to a file called deployable_contractname.txt in your contract's project directory. On OSX or Linux systems, it will instantiate a private development network running the ethereum protocol, create a loaded account for you to use on it, start a miner for this network, and open a console from which you can interact with this network. All you'll have to do is unlock your account:
 
-    > personal.unlockAccount(eth.accounts[0], "password")
+    > personal.unlockAccount(eth.accounts[0], "password", 0)
 
 set that account as the default account:
 
@@ -32,7 +32,7 @@ and paste in the web3 deploy text from the deployable_contractname.txt file! Onc
 
 To simply spin up a development network, without providing a contract to compile, just press enter when you are prompted for a file to compile.
 
-Currently, on Windows, you can copy and paste the deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded, but Riggle will not set up the development network for you. Follow the instructions in the howToSetupPrivateEthNet.txt for more details on how to do this.
+Currently, on Windows, you can copy and paste the deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded, but Riggle will not set up the development network for you. Follow the instructions [here](https://gitlab.com/Sublimity-Blockchain/Riggle/howToSetUpPrivateEthNet.txt) for more details on how to do this.
 
 ## GUI
 
