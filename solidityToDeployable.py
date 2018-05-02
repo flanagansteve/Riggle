@@ -289,9 +289,9 @@ def instantiateContractObject(account_sender_index: int):
     # TODO: how do I calculate how much gas? remix seems to always use 470000
     deployable_contract.write("\t\tgas: \'470000\'\n")
     deployable_contract.write("\t}, function(e, contract){\n")
-    deployable_contract.write("\t\tconsole.log(e, contract);\n")
+    deployable_contract.write("\t\tconsole.log(\'Writing contract to blockchain, please be patient...\');\n")
     deployable_contract.write("\t\tif (typeof contract.address != 'undefined') {\n")
-    deployable_contract.write("\t\t\tconsole.log(\'Contract successfully mined. address: \' + contract.address + \' transactionHash: \' + contract.transactionHash);\n\t\t}\n")
+    deployable_contract.write("\t\t\tconsole.log(\'Contract successfully mined. address: \' + contract.address);\n\t\t}\n")
     deployable_contract.write("\t})\n")
     deployable_contract.close()
 
@@ -317,9 +317,9 @@ def instantiateContractObjects(account_sender_index: int, contractName):
     # TODO: how do I calculate how much gas? remix seems to always use 470000
     deployable_contract.write("\t\tgas: \'47000000\'\n")
     deployable_contract.write("\t}, function(e, contract){\n")
-    deployable_contract.write("\t\tconsole.log(e, contract);\n")
+    deployable_contract.write("\t\tconsole.log(\'Writing contract to blockchain, please be patient...\');\n")
     deployable_contract.write("\t\tif (typeof contract.address != 'undefined') {\n")
-    deployable_contract.write("\t\t\tconsole.log(\'Contract successfully mined. address: \' + contract.address + \' transactionHash: \' + contract.transactionHash);\n\t\t}\n")
+    deployable_contract.write("\t\t\tconsole.log(\'Contract successfully mined. address: \' + contract.address);\n\t\t}\n")
     deployable_contract.write("\t})\n")
 
 def fileToString(file_path):
@@ -346,4 +346,5 @@ def getDeployableContractPath():
         return "Only want devnet"
 
 def isWindows():
-    return windows
+    return 'MSC' in sys.version
+    #return windows

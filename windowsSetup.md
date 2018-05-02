@@ -12,7 +12,7 @@ Create the account in a new chain called devnet:
 
 Copy and paste the address for this new account:
 
-		> notepad account1.txt
+    > notepad account1.txt
 
 Create a genesis file of this form, putting your account from account1.txt in the alloc field, and save it as genesis.json:
 
@@ -42,7 +42,7 @@ In a new command prompt window, open a geth console attached to your custom chai
 
     > geth attach ipc:./.ethereum/devnet/geth.ipc console
 
-Set your loaded account as the default:
+Now, in the geth console, set your loaded account as the default:
 
     > eth.defaultAccount = eth.accounts[0]
 
