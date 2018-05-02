@@ -33,14 +33,21 @@ def init():
         except FileNotFoundError:
             # TODO: fix warning message to adjust for windows
             contract_source = input("File Not Found\nInput file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Contract.sol,\npresuming you're working from the directory above your project\n")
-    try:
-        # osx and linux
-        windows = False
-        contract_name = contract_source[contract_source.rindex('/')+1:contract_source.index('.sol')]
-    except ValueError:
-        # windows
-        windows = True
-        contract_name = contract_source[contract_source.rindex('\\')+1:contract_source.index('.sol')]
+    windows = isWindows()
+    if not windows:
+        try:
+            # osx and linux
+            contract_name = contract_source[contract_source.rindex('/')+1:contract_source.index('.sol')]
+        except ValueError:
+            contract_name = contract_source[:contract_source.index('.sol')]
+            project_directory = "./"
+    else:
+        try:
+            # windows
+            contract_name = contract_source[contract_source.rindex('\\')+1:contract_source.index('.sol')]
+        except ValueError:
+            contract_name = contract_source[:contract_source.index('.sol')]
+            project_directory = ".\\"
 
     if "/contracts/" in contract_source or "\\contracts\\" in contract_source:
         # if in a contracts-only directory, we will save this one directory up,
@@ -56,7 +63,7 @@ def init():
         print(project_directory)
         deployable_path = project_directory + "deployable_"+contract_name.lower()+'.txt'
     else:
-        # if not in a contract directory (ie, using truffle), I presume we
+        # if not in a contract directory, I presume we
         # should put deployable contracts in same directory as provided source
         print("Putting output in same directory as provided source contract: "
             + contract_source[:contract_source.index(contract_name+".sol")])
@@ -73,21 +80,27 @@ def init_from_gui(contract_s):
         except FileNotFoundError:
             # TODO: fix warning message to adjust for windows
             contract_source = input("File Not Found\nInput file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Contract.sol,\npresuming you're working from the directory above your project\n")
+    windows = isWindows()
+    if not windows:
+        try:
+            # osx and linux
+            contract_name = contract_s[contract_s.rindex('/')+1:contract_s.index('.sol')]
+        except ValueError:
+            contract_name = contract_s[:contract_s.index('.sol')]
+            project_directory = "./"
+    else:
+        try:
+            # windows
+            contract_name = contract_s[contract_s.rindex('\\')+1:contract_s.index('.sol')]
+        except ValueError:
+            contract_name = contract_s[:contract_s.index('.sol')]
+            project_directory = ".\\"
 
-    try:
-        # osx and linux
-        windows = False
-        contract_name = contract_source[contract_source.rindex('/')+1:contract_source.index('.sol')]
-    except ValueError:
-        # windows
-        windows = True
-        contract_name = contract_source[contract_source.rindex('\\')+1:contract_source.index('.sol')]
-
-    if "/contracts/" in contract_source or "\\contracts\\" in contract_source:
+    if "/contracts/" in contract_s or "\\contracts\\" in contract_s:
         # if in a contracts-only directory, we will save this one directory up,
         # ie the broader project directory
         print("In a contract directory, writing output in project directory: ")
-        project_directory = contract_source[:contract_source.index(contract_name+".sol")]
+        project_directory = contract_s[:contract_s.index(contract_name+".sol")]
         if windows:
             project_directory = project_directory[:project_directory.rindex("\\")]
             project_directory = project_directory[:project_directory.rindex("\\")+1]
@@ -100,11 +113,11 @@ def init_from_gui(contract_s):
         # if not in a contract directory (ie, using truffle), I presume we
         # should put deployable contracts in same directory as provided source
         print("Putting output in same directory as provided source contract: "
-            + contract_source[:contract_source.index(contract_name+".sol")])
-        deployable_path = contract_source[:contract_source.index(contract_name+".sol")] + "deployable_"+contract_name.lower()+'.txt'
+            + contract_s[:contract_s.index(contract_name+".sol")])
+        deployable_path = contract_s[:contract_s.index(contract_name+".sol")] + "deployable_"+contract_name.lower()+'.txt'
 
     deployable_contract = open(deployable_path, 'w')
-    contract = open(contract_source, 'r')
+    contract = open(contract_s, 'r')
 
 # create the contract object, including its functions and held values
 # DEPRECATED. Now interfacing with solc directly, rather than manually compiling
