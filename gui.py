@@ -96,14 +96,10 @@ def deployToDev():
     init_from_gui(filename)
     defineContractObjects()
     getConstructorParams()
-    if not isWindows():
-        instantiateNetwork(getDeployableContractPath(), isWindows())
-        deployContract(fileToString(getDeployableContractPath()), isWindows())
-        cleanUp(isWindows())
-    else:
-        print("Windows system detected. You will have to manually set up a development network")
-        print("Please consult windowsSetup.md in this repository")
-
+    instantiateNetwork(getDeployableContractPath(), isWindows())
+    deployContract(fileToString(getDeployableContractPath()), isWindows())
+    cleanUp(isWindows())
+    
 #TODO
 def deployToRopsten():
     pass

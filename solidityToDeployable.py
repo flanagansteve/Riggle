@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, subprocess
+import sys, subprocess, os
 try:
     from solc import compile_source, compile_files, compile_standard
 except:
@@ -34,6 +34,7 @@ def init():
             # TODO: fix warning message to adjust for windows
             contract_source = input("File Not Found\nInput file location as:\nproject_directory/Contract.sol\nor\nproject_directory/contracts/Contract.sol,\npresuming you're working from the directory above your project\n")
     windows = isWindows()
+    project_directory = ""
     if not windows:
         try:
             # osx and linux
@@ -63,7 +64,7 @@ def init():
         print(project_directory)
         deployable_path = project_directory + "deployable_"+contract_name.lower()+'.txt'
     else:
-        # if not in a contract directory, I presume we
+        # if not in a contract directory (ie, using truffle), I presume we
         # should put deployable contracts in same directory as provided source
         print("Putting output in same directory as provided source contract: "
             + contract_source[:contract_source.index(contract_name+".sol")])
@@ -72,6 +73,7 @@ def init():
 
 def init_from_gui(contract_s):
     global contract_source, contract, deployable_path, deployable_contract, windows, contract_name
+    windows = isWindows()
     contract_source = contract_s
     contract = None
     while(contract is None):
@@ -260,10 +262,16 @@ def defineContractObjects():
     for contract_abi in abi_list:
         if len(contract_abi) < 10:
             continue
-        contractName = contract_abi[:contract_abi.index(" =======\\n")]
-        contract_names.append(contractName)
-        contract_abi = contract_abi[contract_abi.index("\\n[")+2:]
-        contract_abi = contract_abi[:contract_abi.index("\\n")]
+        if windows:
+            contractName = contract_abi[:contract_abi.index(" =======\\r\\n")]
+            contract_names.append(contractName)
+            contract_abi = contract_abi[contract_abi.index("\\r\\n[")+2:]
+            contract_abi = contract_abi[:contract_abi.index("\\r\\n")]
+        else:
+            contractName = contract_abi[:contract_abi.index(" =======\\n")]
+            contract_names.append(contractName)
+            contract_abi = contract_abi[contract_abi.index("\\n[")+2:]
+            contract_abi = contract_abi[:contract_abi.index("\\n")]
         deployable_contract.write("var " + contractName.lower() + "Contract = web3.eth.contract("+contract_abi+")\n")
 
 def getConstructorParams():
@@ -296,7 +304,10 @@ def instantiateContractObject(account_sender_index: int):
     for constructor_param in constructor_parameters:
         deployable_contract.write("\t" + constructor_param[1] + ",\n")
     deployable_contract.write("\t{\n")
-    deployable_contract.write("\t\tfrom: web3.eth.accounts["+str(account_sender_index)+"],\n")
+    if not windows:
+        deployable_contract.write("\t\tfrom: web3.eth.accounts["+str(account_sender_index)+"],\n")
+    else:
+        deployable_contract.write("\t\tfrom: web3.eth.coinbase,\n")
     source = fileToString(contract_source)
     deployable_contract.write("\t\tdata: \'0x" + getContractBytecode(source) + "\',\n")
     # TODO: how do I calculate how much gas? remix seems to always use 470000
@@ -317,15 +328,23 @@ def instantiateContractObjects(account_sender_index: int, contractName):
         if constructor_param[2] == contractName:
             deployable_contract.write("\t" + constructor_param[1] + ",\n")
     deployable_contract.write("\t{\n")
-    deployable_contract.write("\t\tfrom: web3.eth.accounts["+str(account_sender_index)+"],\n")
+    if not windows:
+        deployable_contract.write("\t\tfrom: web3.eth.accounts["+str(account_sender_index)+"],\n")
+    else:
+        deployable_contract.write("\t\tfrom: web3.eth.coinbase,\n")
     bytecodes = str(subprocess.check_output(["solc", "--bin", contract_source]))
     bytecode_list = bytecodes.split("======= "+contract_source+":")
     contractByte = ""
     for byte in bytecode_list:
         if contractName in byte:
-            contractByte = byte[byte.index("Binary: \\n")+len("Binary: \\n"):byte.rindex("\\n")]
-            if "\\n" in contractByte:
-                contractByte = contractByte[:contractByte.rindex("\\n")]
+            if not windows:
+                contractByte = byte[byte.index("Binary: \\n")+len("Binary: \\n"):byte.rindex("\\n")]
+                if "\\n" in contractByte:
+                    contractByte = contractByte[:contractByte.rindex("\\n")]
+            else:
+                contractByte = byte[byte.index("Binary: \\r\\n")+len("Binary: \\r\\n"):byte.rindex("\\r\\n")]
+                if "\\r\\n" in contractByte:
+                    contractByte = contractByte[:contractByte.rindex("\\r\\n")]
     deployable_contract.write("\t\tdata: \'0x" + contractByte + "\',\n")
     # TODO: how do I calculate how much gas? remix seems to always use 470000
     deployable_contract.write("\t\tgas: \'47000000\'\n")

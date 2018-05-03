@@ -11,17 +11,11 @@ from setupDevnetAndDeploy import *
     # windows: setx or even just set
     # osx/linux: edit bash profile
 init()
-#defineContractObject()
 defineContractObjects()
 getConstructorParams()
-#instantiateContractObject(0)
-if not isWindows():
-    instantiateNetwork(getDeployableContractPath(), isWindows())
-    if getDeployableContractPath() == "Only want devnet":
-        deployContract("", isWindows())
-    else:
-        deployContract(fileToString(getDeployableContractPath()), isWindows())
-    cleanUp(isWindows())
+instantiateNetwork(getDeployableContractPath(), isWindows())
+if getDeployableContractPath() == "Only want devnet":
+    deployContract("", isWindows())
 else:
-    print("Windows system detected. You will have to manually set up a development network")
-    print("Please consult windowsSetup.md in this repository")
+    deployContract(fileToString(getDeployableContractPath()), isWindows())
+cleanUp(isWindows())
