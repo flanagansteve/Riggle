@@ -63,7 +63,7 @@ def instantiateNetwork(deployable_path, windows=False):
     if not windows:
         genesis_json = open('./devnet_info/genesis.json', 'w')
     else:
-        genesis_json = open('.\\devnet_info\\genesis_json', 'w')
+        genesis_json = open('.\\devnet_info\\genesis.json', 'w')
     genesis_json.write("{\n\t\"config\": {" +
                        "\n\t\t\"chainId\": 15,\n\t\t\"homesteadBlock\": 0,\n\t\t\"eip155Block\": 0,\n\t\t\"eip158Block\": 0\n\t}," +
                        "\n\t\"difficulty\": \"200\",\n\t\"gasLimit\": \"2100000000000\",\n\t\"alloc\": {" +
