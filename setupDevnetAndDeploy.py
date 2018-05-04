@@ -127,7 +127,6 @@ def deployContract(web3_source, windows=False):
         subprocess.check_call(["chmod", "+rwx", "./init_console.sh"])
         subprocess.check_call(["./init_console.sh"])
     else:
-        subprocess.check_call()
         subprocess.check_call(["geth", "--port", port_num, "attach", "ipc:\\\\.\\pipe\\geth.ipc", "console"])
     # TODO: somehow input web3 text into geth console.
 
