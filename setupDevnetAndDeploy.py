@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 import os, subprocess, random, string, time
-# TODO: test windows support
-    # TODO: does python need to open files using \ for windows? or does it still use /?
-
+# TODO: randomly generate datadir for windows
+# TODO: remove chain at the end on windows
+# TODO: (potentially) randomly generate password
+# TODO: inject unlock, default, and deployable contract directly into geth console
+# TODO: if can do above, inject automated tests into geth
 # TODO: randomly pick port num
+# TODO: are directories working on windows?
 port_num = "35003"
 devnet_directory = ""
 devnet_address = ""
@@ -146,7 +149,9 @@ def cleanUp(windows=False):
         os.remove(str(os.getcwd()) + ".\\devnet_info\\devnet_password.txt")
         os.remove(str(os.getcwd()) + ".\\devnet_info\\genesis.json")
         os.rmdir(str(os.getcwd()) + '.\\devnet_info')
-        os.rmdir(str(os.getcwd()) + '.\\ethereum\\devnet')
+        os.remove('.\\ethereum\\devnet\\lightchaindata')
+        os.remove('.\\ethereum\\devnet\\chaindata')
+        #os.rmdir(str(os.getcwd()) + '.\\ethereum\\devnet')
     os.remove("instantiate_geth_account.sh")
     os.remove("init_geth.sh")
     os.remove("init_miner.sh")

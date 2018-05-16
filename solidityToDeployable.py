@@ -8,6 +8,7 @@ except:
 
 # TODO: handle libraries
 # TODO: handle contract coding errors gracefully
+# TODO: fix parsing on windows 
 
 contract_source = None
 contract_name = None
