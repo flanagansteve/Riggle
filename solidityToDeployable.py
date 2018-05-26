@@ -264,8 +264,9 @@ def defineContractObjects():
             continue
         if windows:
             contractName = contract_abi[:contract_abi.index(" =======\\r\\n")]
+            contractName = contract_abi[contractName.rindex(":"):]
             contract_names.append(contractName)
-            contract_abi = contract_abi[contract_abi.index("\\r\\n[")+2:]
+            contract_abi = contract_abi[contract_abi.index("\\r\\n[")+4:]
             contract_abi = contract_abi[:contract_abi.index("\\r\\n")]
         else:
             contractName = contract_abi[:contract_abi.index(" =======\\n")]
