@@ -32,8 +32,6 @@ and paste in the web3 deploy text from the deployable_contractname.txt file! Onc
 
 To simply spin up a development network, without providing a contract to compile, just press enter when you are prompted for a file to compile.
 
-Currently, on Windows, you can copy and paste the deployable text into a geth console to interact with your contract, provided the account you asked Riggle to deploy from is unlocked and funded, but Riggle will not set up the development network for you. Follow the instructions [here](https://gitlab.com/Sublimity-Blockchain/Riggle/blob/master/windowsSetup.md) for more details on how to do this.
-
 ## GUI
 
 To run the gui, open a terminal/command prompt and run:
