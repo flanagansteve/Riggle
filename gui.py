@@ -99,7 +99,7 @@ def deployToDev():
     instantiateNetwork(getDeployableContractPath(), isWindows())
     deployContract(fileToString(getDeployableContractPath()), isWindows())
     cleanUp(isWindows())
-    
+
 #TODO
 def deployToRopsten():
     pass

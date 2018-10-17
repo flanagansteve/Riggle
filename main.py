@@ -1,5 +1,6 @@
 from solidityToDeployable import *
 from setupDevnetAndDeploy import *
+#TODO see exec todos in setupDevnetAndDeploy
 #TODO: automatically install dependencies:
     # geth
     # Solc

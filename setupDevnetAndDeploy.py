@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 import os, subprocess, random, string, time
+# TODO automate contract deployment via geth exec and addr prediction
+# TODO add capability for automated testing via geth exec
+
 # TODO: test windows support
     # TODO: does python need to open files using \ for windows? or does it still use /?
 
