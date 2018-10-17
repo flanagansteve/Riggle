@@ -1,5 +1,6 @@
 from solidityToDeployable import *
 from setupDevnetAndDeploy import *
+#TODO move off py-solc by making a command line call to solc directly
 #TODO see exec todos in setupDevnetAndDeploy
 #TODO: automatically install dependencies:
     # geth
