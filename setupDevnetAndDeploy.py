@@ -1,19 +1,16 @@
 #!/usr/bin/python3
 import os, subprocess, random, string, time
-<<<<<<< HEAD
 # TODO automate contract deployment via geth exec and addr prediction
 # TODO add capability for automated testing via geth exec
 
 # TODO: test windows support
     # TODO: does python need to open files using \ for windows? or does it still use /?
 
-=======
 # TODO: randomly generate datadir for windows
 # TODO: remove chain at the end on windows
 # TODO: (potentially) randomly generate password
 # TODO: inject unlock, default, and deployable contract directly into geth console
 # TODO: if can do above, inject automated tests into geth
->>>>>>> 86ae318a7263cfd27fe937dbe3a8746a1d7abeb2
 # TODO: randomly pick port num
 # TODO: are directories working on windows?
 port_num = "35003"
